@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<!--
+ The contents of this file are subject to the GiPSi Public License
+ Version 1.0 (the "License"); you may not use this file except in
+ compliance with the License. You may obtain a copy of the License at
+ http://gipsi.case.edu/GiPSiPL/
+
+ Software distributed under the License is distributed on an "AS IS"
+ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ License for the specific language governing rights and limitations
+ under the License.
+
+ The Original Code is GiPSiNet Simulation Description File for the first cycle prototype (GiPSiNet.xsd).
+
+ The Initial Developers of the Original Code are Vincenzo Liberatore and Qingbo Cai.  
+ All Rights Reserved.
+
+ Contributor(s): Vincenzo Liberatore, Qingbo Cai.
+ -->
+	
+	<!-- 
+ This XML schema defines the format that a simulation description file should conform to in the first cycle. 
+ It might need modifications in the first cycle detailed design. The URL for the corresponding manual is 
+ http://vorlon.cwru.edu/~vxl11/GiPSiNet/case/docs/.
+	
+ Date updated: 10/05/2005 
+ -->
+	
+	<xs:element name="GiPSiNet">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="generalParameters" type="GeneralParameters" maxOccurs="1"/>
+				<xs:element name="simulationObjects" type="SimulationObjects" maxOccurs="1"/>					
+				<xs:element name="connectors" type="Connectors" maxOccurs="1"/>
+				<xs:element name="visualization" type="Visualization" maxOccurs="1"/>
+				<xs:element name="collisionDAR" type="CollisionDAR" maxOccurs="1"/>
+			</xs:all>
+		</xs:complexType>
+		
+		<xs:key name="simObjectsNameKey">
+			<xs:annotation>
+				<xs:documentation> 
+					The name of a simulation object should be
+					unique within a simulation description. 
+				</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="simulationObjects/simObject"/>
+			<xs:field xpath="name"/>
+		</xs:key>
+		
+		<xs:key name="connectorsNameKey">
+			<xs:annotation>
+				<xs:documentation> 
+					The name of a connector should be unique within
+					a simulation description. 
+				</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="connectors/connector"/>
+			<xs:field xpath="name"/>
+		</xs:key>
+		
+		<xs:keyref refer="simObjectsNameKey" name="connectorObjectNameRef">
+			<xs:annotation>
+				<xs:documentation> 
+					Ensure objects connected by a connector are
+					known objects. 
+				</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="connectors/connector"/>
+			<xs:field xpath="objectName"/>
+		</xs:keyref>
+		
+		<xs:key name="camerasNameKey">
+			<xs:annotation>
+				<xs:documentation> 
+					The name of a camera should be unique within a
+					simulation description.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="visualization/camera"/>
+			<xs:field xpath="name"/>
+		</xs:key>
+		
+		<xs:keyref refer="camerasNameKey" name="attachedCameraNameRef">
+			<xs:annotation>
+				<xs:documentation> 
+					Ensure the camera attached to a light is a known camera. 
+				</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="visualization/light"/>
+			<xs:field xpath="attachedCameraName"/>
+		</xs:keyref>
+	</xs:element>
+	
+	
+	<!--Type definition of "GeneralParameters"-->
+	<xs:complexType name="GeneralParameters">
+		<xs:all>
+			<xs:element name="verboseMode" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="File"/>
+						<xs:enumeration value="Screen"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="verboseLevel" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="9"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="computationalHook" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="networkHook" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="simTime" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:float">
+						<xs:minExclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="gravity" type="xs:float" minOccurs="1" maxOccurs="1">
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "SimulationObjects"-->
+	<xs:complexType name="SimulationObjects">
+		<xs:sequence>
+			<xs:element name="simObject" type="SimObject" minOccurs="2"
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Connectors"-->
+	<xs:complexType name="Connectors">
+		<xs:sequence>
+			<xs:element name="connector" type="Connector" minOccurs="0"
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Visualization"-->
+	<xs:complexType name="Visualization">
+		<xs:sequence>
+			<xs:element name="scenes" type="Scenes" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="textures" type="Textures" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="shaders" type="VisShaders" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "CollisionDAR"-->
+	<xs:complexType name="CollisionDAR">
+		<xs:all>
+			<xs:element name="enabled" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="colDetectionMethod" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Tri-Tri"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="colResponseMethod" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:annotation>
+						<xs:documentation>
+							colResponseMethod is reserved for future extensions.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:restriction base="xs:string"> 
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="colDetection" type="ColDetection" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="colResponse" type="ColResponse" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "SimObject"-->
+	<xs:complexType name="SimObject">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1"/>
+			<xs:element name="type" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="FEM"/>
+						<xs:enumeration value="MSD"/>
+						<xs:enumeration value="CBE"/>
+						<xs:enumeration value="LF"/>
+						<xs:enumeration value="PHIO"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="time" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:float">
+						<xs:minExclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="geometries" type="Geometries" minOccurs="1"/>
+			<xs:element name="visualization" type="SimObjVisualization" minOccurs="1"/>
+			<xs:element name="transformation" type="Transformation" minOccurs="1"/>
+			<xs:element name="objParameters" type="ObjParameters" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<!--Type definition of "Scene"-->
+	<xs:complexType name="Scene">
+		<xs:all>
+			<xs:element name="simulationObjectNames" type="SimulationObjectNames" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="cameras" type="Cameras" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="lights" type="Lights" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Scenes"-->
+	<xs:complexType name="Scenes">
+		<xs:sequence>
+			<xs:element name="scene" type="Scene" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--Type definition of "Cameras"-->
+	<xs:complexType name="Cameras">
+		<xs:sequence>
+			<xs:element name="camera" type="Camera" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "SimulationObjectNames"-->
+	<xs:complexType name="SimulationObjectNames">
+		<xs:sequence>
+			<xs:element name="simObjectName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Lights"-->
+	<xs:complexType name="Lights">
+		<xs:sequence>
+			<xs:element name="light" type="Light" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Camera"-->
+	<xs:complexType name="Camera">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1"/>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="ATTACHED"/>
+						<xs:enumeration value="FREE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="attachedHapticInterfaceID" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="position" type="Vector" minOccurs="1"/>
+			<xs:element name="lookAt" type="Vector" minOccurs="1"/>
+			<xs:element name="upVector" type="Vector" minOccurs="1"/>
+			<xs:element name="fieldOfView" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:float">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="180"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Vector", a 3d float vector.-->
+	<xs:complexType name="Vector">
+		<xs:sequence>
+			<xs:element name="pos" type="xs:float" minOccurs="3" maxOccurs="3"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Matrix", a 3 by 3 float matrix.-->
+	<xs:complexType name="Matrix">
+		<xs:sequence>
+			<xs:element name="row" type="Vector" minOccurs="3" maxOccurs="3"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Color"-->
+	<xs:complexType name="Color">
+		<xs:all>
+			<xs:element name="red" type="A0-1Float" minOccurs="1"/>
+			<xs:element name="green" type="A0-1Float" minOccurs="1"/>
+			<xs:element name="blue" type="A0-1Float" minOccurs="1"/>
+			<xs:element name="opacity" type="A0-1Float" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Light"-->
+	<xs:complexType name="Light">
+		<xs:all>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="ATTACHED"/>
+						<xs:enumeration value="FREE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="position" type="Vector" minOccurs="1"/>
+			<xs:element name="direction" type="Vector" minOccurs="1"/>
+			<xs:element name="color" type="Color" minOccurs="1"/>
+			<xs:element name="attachedCameraName" type="xs:string" maxOccurs="1"/>
+			<xs:element name="cameraNames" type="CameraNames" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="CameraNames">
+		<xs:sequence>
+			<xs:element name="cameraName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--Type definition of "A0-1Float", a float between 0 and 1.-->
+	<xs:simpleType name="A0-1Float">
+		<xs:restriction base="xs:float">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<!--Type definition of "Rotation".-->
+	<xs:complexType name="Rotation">
+		<xs:choice>
+			<xs:element name="rotationMatrix" type="RotationMatrix"/>
+			<xs:element name="axisRotation" type="AxisRotation"/>
+			<xs:element name="coordinateRotation" type="CoordinateRotation"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "RotationMatrix".-->
+	<xs:complexType name="RotationMatrix">
+		<xs:all>
+			<xs:element name="R" type="Matrix" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "AxisRotation".-->
+	<xs:complexType name="AxisRotation">
+		<xs:all>
+			<xs:element name="axis" type="Vector" minOccurs="1"/>
+			<xs:element name="angle" type="xs:float" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "CoordinateRotation".-->
+	<xs:complexType name="CoordinateRotation">
+		<xs:all>
+			<xs:element name="angles" type="Vector" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Transformation".-->
+	<xs:complexType name="Transformation">
+		<xs:all>
+			<xs:element name="scaling" type="Vector" minOccurs="0"/>
+			<xs:element name="rotation" type="Rotation" minOccurs="0"/>
+			<xs:element name="translation" type="Vector" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "File".-->
+	<xs:complexType name="File">
+		<xs:all>
+			<xs:element name="path" type="xs:string" minOccurs="1"/>
+			<xs:element name="fileName" type="xs:string" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "Connector".-->
+	<xs:complexType name="Connector">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="FEM/CBE"/>
+						<xs:enumeration value="FEM/LF"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="objectName" type="xs:string" minOccurs="2" maxOccurs="2"/>
+			<xs:element name="modelParameters" type="ConnectorModelParameters" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	
+	<!--Type definition of "ConnectorModelParameters".-->
+	<xs:complexType name="ConnectorModelParameters">
+		<xs:choice>
+			<xs:element name="FEM_CBEParameters" type="FEM_CBEParameters"/>
+			<xs:element name="FEM_LFParameters" type="FEM_LFParameters"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "FEM_CBEParameters".-->
+	<xs:complexType name="FEM_CBEParameters">
+		<xs:all>
+			<xs:element name="ExStressValueXX" type="xs:float" minOccurs="1"/>
+			<xs:element name="ExStressValueYY" type="xs:float" minOccurs="1"/>
+			<xs:element name="ExStressValueZZ" type="xs:float" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "FEM_LFParameters".-->
+	<xs:complexType name="FEM_LFParameters">
+		<xs:all>
+			<xs:element name="corrFile" type="File" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "ObjParameters".-->
+	<xs:complexType name="ObjParameters">
+		<xs:choice>
+			<xs:element name="NHParameters" type="NHParameters"/>
+			<xs:element name="HIOParameters" type="HIOParameters"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "NHParameters".-->
+	<xs:complexType name="NHParameters">
+		<xs:all>
+			<xs:element name="timeStep" type="xs:float" default="0.01"/>
+			<xs:element name="numericMethod" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Euler"/>
+						<xs:enumeration value="MidPoint"/>
+						<xs:enumeration value="RK4"/>
+						<xs:enumeration value="ImplicitEuler"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="modelParameters" type="ModelParameters" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "HIOParameters".-->
+	<xs:complexType name="HIOParameters">
+		<xs:annotation>
+			<xs:documentation> 
+				More haptic interface object parameters are
+				reserved for future extensions.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="ID" type="xs:integer" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "ModelParameters".-->
+	<xs:complexType name="ModelParameters">
+		<xs:choice>
+			<xs:element name="FEMParameters" type="FEMParameters"/>
+			<xs:element name="MSDParameters" type="MSDParameters"/>
+			<xs:element name="CBEParameters" type="CBEParameters"/>
+			<xs:element name="LFParameters" type="LFParameters"/>
+		</xs:choice>
+	</xs:complexType>
+	
+
+	<!--Type definition of "FEMParameters".-->
+	<xs:complexType name="FEMParameters">
+		<xs:all>
+			<xs:element name="Rho" type="xs:float" minOccurs="1"/>
+			<xs:element name="Mu" type="xs:float" minOccurs="1"/>
+			<xs:element name="Lambda" type="xs:float" minOccurs="1"/>
+			<xs:element name="Nu" type="xs:float" minOccurs="1"/>
+			<xs:element name="Phi" type="xs:float" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "MSDParameters".-->
+	<xs:complexType name="MSDParameters">
+		<xs:all>
+			<xs:element name="K" type="xs:float" minOccurs="1"/>
+			<xs:element name="D" type="xs:float" minOccurs="1"/>
+			<xs:element name="mass" type="xs:float" minOccurs="1"/>
+			<xs:element name="MSDFile" type="File" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "CBEParameters".-->
+	<xs:complexType name="CBEParameters">
+		<xs:all>
+			<xs:element name="TempFreq" type="xs:float" minOccurs="1"/>
+			<xs:element name="SpVel" type="xs:float" minOccurs="1"/>
+			<xs:element name="DutyCycle" type="xs:float" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "LFParameters".-->
+	<xs:complexType name="LFParameters">
+		<xs:all>
+			<xs:element name="Pi" type="xs:float" minOccurs="1"/>
+			<xs:element name="Po" type="xs:float" minOccurs="1"/>
+			<xs:element name="Pfo" type="xs:float" minOccurs="1"/>
+			<xs:element name="Kc" type="xs:float" minOccurs="1"/>
+			<xs:element name="Bc" type="xs:float" minOccurs="1"/>
+			<xs:element name="Ri" type="xs:float" minOccurs="1"/>
+			<xs:element name="Ro" type="xs:float" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+
+	<!--Type definition of "SimObjVisualization".-->
+	<xs:complexType name="SimObjVisualization" >
+		<xs:all>
+			<xs:element name="baseColor" type="Color" minOccurs="1"/>
+			<xs:element name="shaders" type="SimObjShaders" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+
+	
+	<!--Type definition of "ColDetection".-->
+	<xs:complexType name="ColDetection">
+		<xs:choice>
+			<xs:element name="Tri-Tri" type="Tri-TriParameters"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "ColResponse".-->
+	<xs:complexType name="ColResponse">
+		<xs:annotation>
+			<xs:documentation> 
+				The collision response parameters are
+				reserved for future extensions. 
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	
+	<!--Type definition of "ColResponse".-->
+	<xs:complexType name="Tri-TriParameters">
+		<xs:all>
+			<xs:element name="colThreshold" type="xs:float" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<xs:complexType name="Geometries">
+		<xs:sequence>
+			<xs:element name=" geometry" type="Geometry" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Geometry">
+		<xs:all>
+			<xs:element name="geometryFile" type="File" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="textureNames" type= "TextureNames" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<xs:complexType name="TextureNames">
+		<xs:sequence>
+			<xs:element name="textureName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Textures">
+		<xs:sequence>
+			<xs:element name="texture" type="Texture" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Texture">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="GIPSI_2D_DYNAMIC_SERVER"/>
+						<xs:enumeration value="GIPSI_2D_STATIC_SERVER"/>
+						<xs:enumeration value="GIPSI_2D_STATIC_CLIENT"/>
+						<xs:enumeration value="GIPSI_3D_STATIC_CLIENT"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="path" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="fileName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="ShaderParam">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="ShaderParams">
+		<xs:sequence>
+			<xs:element name="param" type="ShaderParam" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="SimObjShader">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="params" type="ShaderParams" minOccurs="1" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="SimObjShaders">
+		<xs:sequence>
+			<xs:element name="shader" type="SimObjShader" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>		
+	</xs:complexType>
+	
+	
+	<xs:complexType name="VisShader">
+		<xs:all>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="path" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="passes" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+		</xs:all>		
+	</xs:complexType>
+	
+	
+	<xs:complexType name="VisShaders">
+		<xs:sequence>
+			<xs:element name="shader" type="VisShader" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>		
+	</xs:complexType>
+	
+</xs:schema>

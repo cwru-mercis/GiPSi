@@ -1,0 +1,62 @@
+typedef double Position[3];
+typedef double Orientation[3][3];
+
+typedef sequence<double> DoubleVector;
+typedef sequence<double> DoubleMatrix;
+
+struct CORBAHapticConfiguration {
+	Position	pos; 
+	Orientation orient;
+	unsigned short buttonState;
+} ;
+
+struct CORBAGiPSiLowOrderLinearHapticModel {
+	short			_n;		// number of states of the low order linear model positions + velocities
+	short			_m;		// number of inputs	: Dimension of the position+velocity measurement
+	short			_k;		// number of outputs: Dimension of force ouput
+	DoubleMatrix	A11;	// _n/2 x _n/2 matrix
+	DoubleMatrix	A12;	// _n/2 x _n/2 matrix
+	DoubleMatrix	B1;		// _n/2 x _m matrix
+	DoubleMatrix	C11;	// _k x _n/2 matrix
+	DoubleMatrix	C12;	// _k x _n/2 matrix
+	DoubleMatrix	D;		// _k x _m matrix
+	DoubleVector	f_0;	// _k x  1 vector
+	DoubleVector	zdot_0;	// _n x  1 vector
+	DoubleVector	normal;	// _k x  1 vector	
+} ;
+
+interface CORBAHapticInterface {
+	boolean 	Enable();
+	boolean		Disable();
+	boolean 	Terminate();
+	short		ReturnHapticInterfaceIdentifier();
+	boolean		IsInitialized();
+	boolean		IsEnabled();
+	double		ReportUpdateRate();
+	double		ReportSamplingTime();
+	CORBAHapticConfiguration		ReadConfiguration();
+	short		UseHapticModel(in  CORBAGiPSiLowOrderLinearHapticModel model);
+};
+
+
+interface CORBAPhantomHapticInterface : CORBAHapticInterface  {
+	short SetHandle(in short handler);
+	short switchModel();
+	short ReturnHandle();
+};
+
+interface CORBAMouseHapticInterface : CORBAHapticInterface  {
+};
+
+interface CORBAHapticsManager {	// Abstract base interface
+	short StartHapticsThread();
+	short EndHapticsThread();
+	boolean isHapticsThreadRunning();
+
+//	CORBAHapticInterface GetHapticInterface(in short n); //it seems no calls to it.
+	short GetNumHapticInterfaces();
+};
+
+
+interface CORBAOpenHapticsManager : CORBAHapticsManager{
+};

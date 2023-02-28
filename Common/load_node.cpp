@@ -18,12 +18,9 @@ All Rights Reserved.
 Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 */
 
-/*    load_node.cpp
- *
- *    v0.1.0
- *
- *
- */
+////	LOAD_NODE.CPP v0.1.0
+////
+////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
 #include <stdio.h>

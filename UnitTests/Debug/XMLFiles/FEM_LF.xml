@@ -1,0 +1,14 @@
+<connector>
+	<name>Connector2</name>
+	<type>FEM/LF</type>
+	<object1Name>MUSCLE</object1Name>
+	<object2Name>BLOOD</object2Name>
+	<modelParameters>
+		<FEM_LFParameters>
+			<corrFile>
+				<path>objects</path>
+				<fileName>dumbell_4K.obj.dumbell_4K1.obj.corr</fileName>
+			</corrFile>
+		</FEM_LFParameters>
+	</modelParameters>
+</connector>

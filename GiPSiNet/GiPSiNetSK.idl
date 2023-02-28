@@ -1,0 +1,12 @@
+interface CORBAGIPSINETSK 
+{
+	void getProjectXML(in string filename, out string xmldata);
+	void loadedProject(in string filename);
+	void startedService(in string service , in string nameservice);	
+	void setUICommand(in string command);
+	void closeConnection(in string service);
+	void testConnection(inout string data);
+};
+
+
+

@@ -15634,6 +15634,1496 @@ static void APIENTRY InitAddSwapHintRectWIN (GLint x, GLint y, GLsizei width, GL
 	glAddSwapHintRectWIN(x, y, width, height);
 }
 
+/* ----------------------------- GL_VERSION_2_0 ---------------------------- */
+
+static void APIENTRY InitAttachShader (GLuint program, GLuint shader)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glAttachShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glAttachShader = extproc;
+
+	glAttachShader(program, shader);
+}
+
+static void APIENTRY InitBindAttribLocation (GLuint program, GLuint index, const GLchar* name)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glBindAttribLocation");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glBindAttribLocation = extproc;
+
+	glBindAttribLocation(program, index, name);
+}
+
+static void APIENTRY InitBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glBlendEquationSeparate");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glBlendEquationSeparate = extproc;
+
+	glBlendEquationSeparate(modeRGB, modeAlpha);
+}
+
+static void APIENTRY InitCompileShader (GLuint shader)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glCompileShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glCompileShader = extproc;
+
+	glCompileShader(shader);
+}
+
+static void APIENTRY InitCreateProgram (void)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glCreateProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glCreateProgram = extproc;
+
+	glCreateProgram();
+}
+
+static void APIENTRY InitCreateShader (GLenum type)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glCreateShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glCreateShader = extproc;
+
+	glCreateShader(type);
+}
+
+static void APIENTRY InitDeleteProgram (GLuint program)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glDeleteProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glDeleteProgram = extproc;
+
+	glDeleteProgram(program);
+}
+
+static void APIENTRY InitDeleteShader (GLuint shader)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glDeleteShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glDeleteShader = extproc;
+
+	glDeleteShader(shader);
+}
+
+static void APIENTRY InitDetachShader (GLuint program, GLuint shader)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glDetachShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glDetachShader = extproc;
+
+	glDetachShader(program, shader);
+}
+
+static void APIENTRY InitDisableVertexAttribArray (GLuint index)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glDisableVertexAttribArray");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glDisableVertexAttribArray = extproc;
+
+	glDisableVertexAttribArray(index);
+}
+
+static void APIENTRY InitDrawBuffers (GLsizei n, const GLenum* bufs)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glDrawBuffers");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glDrawBuffers = extproc;
+
+	glDrawBuffers(n, bufs);
+}
+
+static void APIENTRY InitEnableVertexAttribArray (GLuint index)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glEnableVertexAttribArray");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glEnableVertexAttribArray = extproc;
+
+	glEnableVertexAttribArray(index);
+}
+
+static void APIENTRY InitGetActiveAttrib (GLuint program, GLuint index, GLsizei maxLength, GLsizei* length, GLint* size, GLenum* type, GLchar* name)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetActiveAttrib");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetActiveAttrib = extproc;
+
+	glGetActiveAttrib(program, index, maxLength, length, size, type, name);
+}
+
+static void APIENTRY InitGetActiveUniform (GLuint program, GLuint index, GLsizei maxLength, GLsizei* length, GLint* size, GLenum* type, GLchar* name)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetActiveUniform");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetActiveUniform = extproc;
+
+	glGetActiveUniform(program, index, maxLength, length, size, type, name);
+}
+
+static void APIENTRY InitGetAttachedShaders (GLuint program, GLsizei maxCount, GLsizei* count, GLuint* shaders)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetAttachedShaders");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetAttachedShaders = extproc;
+
+	glGetAttachedShaders(program, maxCount, count, shaders);
+}
+
+static GLint APIENTRY InitGetAttribLocation (GLuint program, const GLchar* name)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetAttribLocation");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return 0;
+	}
+
+	glGetAttribLocation = extproc;
+
+	return glGetAttribLocation(program, name);
+}
+
+static void APIENTRY InitGetProgramInfoLog (GLuint program, GLsizei bufSize, GLsizei* length, GLchar* infoLog)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetProgramInfoLog");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetProgramInfoLog = extproc;
+
+	glGetProgramInfoLog(program, bufSize, length, infoLog);
+}
+
+static void APIENTRY InitGetProgramiv (GLuint program, GLenum pname, GLint* param)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetProgramiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetProgramiv = extproc;
+
+	glGetProgramiv(program, pname, param);
+}
+
+static void APIENTRY InitGetShaderInfoLog (GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* infoLog)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetShaderInfoLog");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetShaderInfoLog = extproc;
+
+	glGetShaderInfoLog(shader, bufSize, length, infoLog);
+}
+
+static void APIENTRY InitGetShaderSource (GLint obj, GLsizei maxLength, GLsizei* length, GLchar* source)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetShaderSource");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetShaderSource = extproc;
+
+	glGetShaderSource(obj, maxLength, length, source);
+}
+
+static void APIENTRY InitGetShaderiv (GLuint shader, GLenum pname, GLint* param)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetShaderiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetShaderiv = extproc;
+
+	glGetShaderiv(shader, pname, param);
+}
+
+static GLint APIENTRY InitGetUniformLocation (GLint programObj, const GLchar* name)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetUniformLocation");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return 0;
+	}
+
+	glGetUniformLocation = extproc;
+
+	return glGetUniformLocation(programObj, name);
+}
+
+static void APIENTRY InitGetUniformfv (GLuint program, GLint location, GLfloat* params)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetUniformfv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetUniformfv = extproc;
+
+	glGetUniformfv(program, location, params);
+}
+
+static void APIENTRY InitGetUniformiv (GLuint program, GLint location, GLint* params)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetUniformiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetUniformiv = extproc;
+
+	glGetUniformiv(program, location, params);
+}
+
+static void APIENTRY InitGetVertexAttribPointerv (GLuint index, GLenum pname, GLvoid* *pointer)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetVertexAttribPointerv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetVertexAttribPointerv = extproc;
+
+	glGetVertexAttribPointerv(index, pname, pointer);
+}
+
+static void APIENTRY InitGetVertexAttribdv (GLuint index, GLenum pname, GLdouble *params)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetVertexAttribdv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetVertexAttribdv = extproc;
+
+	glGetVertexAttribdv(index, pname, params);
+}
+
+static void APIENTRY InitGetVertexAttribfv (GLuint index, GLenum pname, GLfloat *params)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetVertexAttribfv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetVertexAttribfv = extproc;
+
+	glGetVertexAttribfv(index, pname, params);
+}
+
+static void APIENTRY InitGetVertexAttribiv (GLuint index, GLenum pname, GLint *params)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glGetVertexAttribiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glGetVertexAttribiv = extproc;
+
+	glGetVertexAttribiv(index, pname, params);
+}
+
+static GLboolean APIENTRY InitIsProgram (GLuint program)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glIsProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return 0;
+	}
+
+	glIsProgram = extproc;
+
+	return glIsProgram(program);
+}
+
+static GLboolean APIENTRY InitIsShader (GLuint shader)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glIsShader");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return 0;
+	}
+
+	glIsShader = extproc;
+
+	return glIsShader(shader);
+}
+
+static void APIENTRY InitLinkProgram (GLuint program)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glLinkProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glLinkProgram = extproc;
+
+	glLinkProgram(program);
+}
+
+static void APIENTRY InitShaderSource (GLuint shader, GLsizei count, const GLchar** strings, const GLint* lengths)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glShaderSource");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glShaderSource = extproc;
+
+	glShaderSource(shader, count, strings, lengths);
+}
+
+static void APIENTRY InitStencilFuncSeparate (GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glStencilFuncSeparate");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glStencilFuncSeparate = extproc;
+
+	glStencilFuncSeparate(frontfunc, backfunc, ref, mask);
+}
+
+static void APIENTRY InitStencilMaskSeparate (GLenum frontfunc, GLuint backfunc)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glStencilMaskSeparate");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glStencilMaskSeparate = extproc;
+
+	glStencilMaskSeparate(frontfunc, backfunc);
+}
+
+static void APIENTRY InitStencilOpSeparate (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glStencilOpSeparate");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glStencilOpSeparate = extproc;
+
+	glStencilOpSeparate(face, sfail, dpfail, dppass);
+}
+
+static void APIENTRY InitUniform1f (GLint location, GLfloat v0)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform1f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform1f = extproc;
+
+	glUniform1f(location, v0);
+}
+
+static void APIENTRY InitUniform1fv (GLint location, GLsizei count, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform1fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform1fv = extproc;
+
+	glUniform1fv(location, count, value);
+}
+
+static void APIENTRY InitUniform1i (GLint location, GLint v0)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform1i");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform1i = extproc;
+
+	glUniform1i(location, v0);
+}
+
+static void APIENTRY InitUniform1iv (GLint location, GLsizei count, const GLint* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform1iv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform1iv = extproc;
+
+	glUniform1iv(location, count, value);
+}
+
+static void APIENTRY InitUniform2f (GLint location, GLfloat v0, GLfloat v1)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform2f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform2f = extproc;
+
+	glUniform2f(location, v0, v1);
+}
+
+static void APIENTRY InitUniform2fv (GLint location, GLsizei count, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform2fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform2fv = extproc;
+
+	glUniform2fv(location, count, value);
+}
+
+static void APIENTRY InitUniform2i (GLint location, GLint v0, GLint v1)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform2i");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform2i = extproc;
+
+	glUniform2i(location, v0, v1);
+}
+
+static void APIENTRY InitUniform2iv (GLint location, GLsizei count, const GLint* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform2iv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform2iv = extproc;
+
+	glUniform2iv(location, count, value);
+}
+
+static void APIENTRY InitUniform3f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform3f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform3f = extproc;
+
+	glUniform3f(location, v0, v1, v2);
+}
+
+static void APIENTRY InitUniform3fv (GLint location, GLsizei count, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform3fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform3fv = extproc;
+
+	glUniform3fv(location, count, value);
+}
+
+static void APIENTRY InitUniform3i (GLint location, GLint v0, GLint v1, GLint v2)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform3i");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform3i = extproc;
+
+	glUniform3i(location, v0, v1, v2);
+}
+
+static void APIENTRY InitUniform3iv (GLint location, GLsizei count, const GLint* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform3iv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform3iv = extproc;
+
+	glUniform3iv(location, count, value);
+}
+
+static void APIENTRY InitUniform4f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform4f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform4f = extproc;
+
+	glUniform4f(location, v0, v1, v2, v3);
+}
+
+static void APIENTRY InitUniform4fv (GLint location, GLsizei count, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform4fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform4fv = extproc;
+
+	glUniform4fv(location, count, value);
+}
+
+static void APIENTRY InitUniform4i (GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform4i");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform4i = extproc;
+
+	glUniform4i(location, v0, v1, v2, v3);
+}
+
+static void APIENTRY InitUniform4iv (GLint location, GLsizei count, const GLint* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniform4iv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniform4iv = extproc;
+
+	glUniform4iv(location, count, value);
+}
+
+static void APIENTRY InitUniformMatrix2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniformMatrix2fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniformMatrix2fv = extproc;
+
+	glUniformMatrix2fv(location, count, transpose, value);
+}
+
+static void APIENTRY InitUniformMatrix3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniformMatrix3fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniformMatrix3fv = extproc;
+
+	glUniformMatrix3fv(location, count, transpose, value);
+}
+
+static void APIENTRY InitUniformMatrix4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUniformMatrix4fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUniformMatrix4fv = extproc;
+
+	glUniformMatrix4fv(location, count, transpose, value);
+}
+
+static void APIENTRY InitUseProgram (GLuint program)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glUseProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glUseProgram = extproc;
+
+	glUseProgram(program);
+}
+
+static void APIENTRY InitValidateProgram (GLuint program)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glValidateProgram");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glValidateProgram = extproc;
+
+	glValidateProgram(program);
+}
+
+static void APIENTRY InitVertexAttrib1d (GLuint index, GLdouble x)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1d");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1d = extproc;
+
+	glVertexAttrib1d(index, x);
+}
+
+static void APIENTRY InitVertexAttrib1dv (GLuint index, const GLdouble* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1dv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1dv = extproc;
+
+	glVertexAttrib1dv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib1f (GLuint index, GLfloat x)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1f = extproc;
+
+	glVertexAttrib1f(index, x);
+}
+
+static void APIENTRY InitVertexAttrib1fv (GLuint index, const GLfloat* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1fv = extproc;
+
+	glVertexAttrib1fv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib1s (GLuint index, GLshort x)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1s");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1s = extproc;
+
+	glVertexAttrib1s(index, x);
+}
+
+static void APIENTRY InitVertexAttrib1sv (GLuint index, const GLshort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib1sv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib1sv = extproc;
+
+	glVertexAttrib1sv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib2d (GLuint index, GLdouble x, GLdouble y)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2d");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2d = extproc;
+
+	glVertexAttrib2d(index, x, y);
+}
+
+static void APIENTRY InitVertexAttrib2dv (GLuint index, const GLdouble* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2dv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2dv = extproc;
+
+	glVertexAttrib2dv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib2f (GLuint index, GLfloat x, GLfloat y)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2f = extproc;
+
+	glVertexAttrib2f(index, x, y);
+}
+
+static void APIENTRY InitVertexAttrib2fv (GLuint index, const GLfloat* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2fv = extproc;
+
+	glVertexAttrib2fv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib2s (GLuint index, GLshort x, GLshort y)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2s");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2s = extproc;
+
+	glVertexAttrib2s(index, x, y);
+}
+
+static void APIENTRY InitVertexAttrib2sv (GLuint index, const GLshort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib2sv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib2sv = extproc;
+
+	glVertexAttrib2sv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib3d (GLuint index, GLdouble x, GLdouble y, GLdouble z)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3d");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3d = extproc;
+
+	glVertexAttrib3d(index, x, y, z);
+}
+
+static void APIENTRY InitVertexAttrib3dv (GLuint index, const GLdouble* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3dv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3dv = extproc;
+
+	glVertexAttrib3dv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib3f (GLuint index, GLfloat x, GLfloat y, GLfloat z)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3f = extproc;
+
+	glVertexAttrib3f(index, x, y, z);
+}
+
+static void APIENTRY InitVertexAttrib3fv (GLuint index, const GLfloat* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3fv = extproc;
+
+	glVertexAttrib3fv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib3s (GLuint index, GLshort x, GLshort y, GLshort z)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3s");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3s = extproc;
+
+	glVertexAttrib3s(index, x, y, z);
+}
+
+static void APIENTRY InitVertexAttrib3sv (GLuint index, const GLshort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib3sv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib3sv = extproc;
+
+	glVertexAttrib3sv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Nbv (GLuint index, const GLbyte* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nbv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nbv = extproc;
+
+	glVertexAttrib4Nbv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Niv (GLuint index, const GLint* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Niv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Niv = extproc;
+
+	glVertexAttrib4Niv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Nsv (GLuint index, const GLshort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nsv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nsv = extproc;
+
+	glVertexAttrib4Nsv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Nub (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nub");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nub = extproc;
+
+	glVertexAttrib4Nub(index, x, y, z, w);
+}
+
+static void APIENTRY InitVertexAttrib4Nubv (GLuint index, GLbyte *v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nubv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nubv = extproc;
+
+	glVertexAttrib4Nubv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Nuiv (GLuint index, const GLuint* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nuiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nuiv = extproc;
+
+	glVertexAttrib4Nuiv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4Nusv (GLuint index, const GLushort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4Nusv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4Nusv = extproc;
+
+	glVertexAttrib4Nusv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4bv (GLuint index, const GLbyte* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4bv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4bv = extproc;
+
+	glVertexAttrib4bv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4d (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4d");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4d = extproc;
+
+	glVertexAttrib4d(index, x, y, z, w);
+}
+
+static void APIENTRY InitVertexAttrib4dv (GLuint index, const GLdouble* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4dv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4dv = extproc;
+
+	glVertexAttrib4dv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4f (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4f");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4f = extproc;
+
+	glVertexAttrib4f(index, x, y, z, w);
+}
+
+static void APIENTRY InitVertexAttrib4fv (GLuint index, const GLfloat* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4fv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4fv = extproc;
+
+	glVertexAttrib4fv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4iv (GLuint index, const GLint* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4iv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4iv = extproc;
+
+	glVertexAttrib4iv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4s (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4s");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4s = extproc;
+
+	glVertexAttrib4s(index, x, y, z, w);
+}
+
+static void APIENTRY InitVertexAttrib4sv (GLuint index, const GLshort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4sv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4sv = extproc;
+
+	glVertexAttrib4sv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4ubv (GLuint index, const GLubyte* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4ubv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4ubv = extproc;
+
+	glVertexAttrib4ubv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4uiv (GLuint index, const GLuint* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4uiv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4uiv = extproc;
+
+	glVertexAttrib4uiv(index, v);
+}
+
+static void APIENTRY InitVertexAttrib4usv (GLuint index, const GLushort* v)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttrib4usv");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttrib4usv = extproc;
+
+	glVertexAttrib4usv(index, v);
+}
+
+static void APIENTRY InitVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer)
+{
+	void *extproc;
+
+	extproc = (void *) wglGetProcAddress("glVertexAttribPointer");
+
+	if (extproc == NULL) {
+		_ASSERT(0);
+		return;
+	}
+
+	glVertexAttribPointer = extproc;
+
+	glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+}
+
 #ifdef _WIN32
 
 static HANDLE WINAPI InitCreateBufferRegionARB (HDC hDC, int iLayerPlane, UINT uType)
@@ -17781,6 +19271,100 @@ _GLextensionProcs _extensionProcs = {
 	InitDepthBoundsEXT,
 	InitBlendEquationSeparateEXT,
 	InitAddSwapHintRectWIN,
+	/* ----------------------------- GL_VERSION_2_0 ---------------------------- */
+	InitAttachShader,
+	InitBindAttribLocation,
+	InitBlendEquationSeparate,
+	InitCompileShader,
+	InitCreateProgram,
+	InitCreateShader,
+	InitDeleteProgram,
+	InitDeleteShader,
+	InitDetachShader,
+	InitDisableVertexAttribArray,
+	InitDrawBuffers,
+	InitEnableVertexAttribArray,
+	InitGetActiveAttrib,
+	InitGetActiveUniform,
+	InitGetAttachedShaders,
+	InitGetAttribLocation,
+	InitGetProgramInfoLog,
+	InitGetProgramiv,
+	InitGetShaderInfoLog,
+	InitGetShaderSource,
+	InitGetShaderiv,
+	InitGetUniformLocation,
+	InitGetUniformfv,
+	InitGetUniformiv,
+	InitGetVertexAttribPointerv,
+	InitGetVertexAttribdv,
+	InitGetVertexAttribfv,
+	InitGetVertexAttribiv,
+	InitIsProgram,
+	InitIsShader,
+	InitLinkProgram,
+	InitShaderSource,
+	InitStencilFuncSeparate,
+	InitStencilMaskSeparate,
+	InitStencilOpSeparate,
+	InitUniform1f,
+	InitUniform1fv,
+	InitUniform1i,
+	InitUniform1iv,
+	InitUniform2f,
+	InitUniform2fv,
+	InitUniform2i,
+	InitUniform2iv,
+	InitUniform3f,
+	InitUniform3fv,
+	InitUniform3i,
+	InitUniform3iv,
+	InitUniform4f,
+	InitUniform4fv,
+	InitUniform4i,
+	InitUniform4iv,
+	InitUniformMatrix2fv,
+	InitUniformMatrix3fv,
+	InitUniformMatrix4fv,
+	InitUseProgram,
+	InitValidateProgram,
+	InitVertexAttrib1d,
+	InitVertexAttrib1dv,
+	InitVertexAttrib1f,
+	InitVertexAttrib1fv,
+	InitVertexAttrib1s,
+	InitVertexAttrib1sv,
+	InitVertexAttrib2d,
+	InitVertexAttrib2dv,
+	InitVertexAttrib2f,
+	InitVertexAttrib2fv,
+	InitVertexAttrib2s,
+	InitVertexAttrib2sv,
+	InitVertexAttrib3d,
+	InitVertexAttrib3dv,
+	InitVertexAttrib3f,
+	InitVertexAttrib3fv,
+	InitVertexAttrib3s,
+	InitVertexAttrib3sv,
+	InitVertexAttrib4Nbv,
+	InitVertexAttrib4Niv,
+	InitVertexAttrib4Nsv,
+	InitVertexAttrib4Nub,
+	InitVertexAttrib4Nubv,
+	InitVertexAttrib4Nuiv,
+	InitVertexAttrib4Nusv,
+	InitVertexAttrib4bv,
+	InitVertexAttrib4d,
+	InitVertexAttrib4dv,
+	InitVertexAttrib4f,
+	InitVertexAttrib4fv,
+	InitVertexAttrib4iv,
+	InitVertexAttrib4s,
+	InitVertexAttrib4sv,
+	InitVertexAttrib4ubv,
+	InitVertexAttrib4uiv,
+	InitVertexAttrib4usv,
+	InitVertexAttribPointer,
 #ifdef _WIN32
 	InitCreateBufferRegionARB,
 	InitDeleteBufferRegionARB,

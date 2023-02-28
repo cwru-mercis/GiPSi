@@ -1,0 +1,51 @@
+//
+// Phong Shading
+//
+// Authors: Svend Johannsen
+//
+// Copyright (c) 2005
+
+uniform bool HalfWayApprox;
+
+varying vec3 norm, light, view, halfway;
+
+const float AmbientContribution  = 0.1;
+const float SpecularContribution = 0.3;
+const float DiffuseContribution  = 1.0 - SpecularContribution - AmbientContribution;
+
+vec3 AmbientComponent( float intensity )
+{
+   return vec3( AmbientContribution * intensity );
+}
+
+vec3 DiffuseComponent( float intensity )
+{
+   return vec3( DiffuseContribution * max( 0.0, dot( norm, light ) ) );
+}
+
+vec3 SpecularComponent( float intensity, bool HalfWayApprox )
+{
+   if( HalfWayApprox )
+   {
+      // Approximation to the specular reflection using the halfway vector
+      return vec3( SpecularContribution * pow( max( 0.0, dot( norm, halfway ) ), 32.0 ) );
+   }
+   else
+   {
+      // Conventional specular component
+      vec3 reflection = normalize( reflect( -light, norm ) );
+      return vec3( SpecularContribution * pow( max( 0.0, dot( view, reflection ) ), 16.0 ) );
+   }
+   
+}
+
+void main(void)
+{
+   vec3 color;
+  
+   // Phong Illumination Model
+   color = AmbientComponent( AmbientContribution ) + DiffuseComponent( DiffuseContribution ) +
+           SpecularComponent( SpecularContribution, HalfWayApprox );
+   
+   gl_FragColor = vec4 (color, 1.0);
+}

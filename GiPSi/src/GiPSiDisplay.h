@@ -35,8 +35,16 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 #ifndef _GiPSiDISPLAY_H
 #define _GiPSiDISPLAY_H
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <pthread.h>
 #include "GiPSiGeometry.h"
+#include "XMLNode.h"
+#include "XMLNodeList.h"
+
+using namespace GiPSiXMLWrapper;
 
 /****************************************************************
  *				DATA STRUCTURES FOR DISPLAY MANAGERS			*  
@@ -49,11 +57,16 @@ enum	DisplayPolygonMode  {	GIPSI_POLYGON_OUTLINE, GIPSI_POLYGON_FILL };
 
 enum	DisplayShadeMode  {	GIPSI_SHADE_FLAT, GIPSI_SHADE_SMOOTH };
 
+enum	DisplayTextureType {	GIPSI_NO_TEXTURE, GIPSI_2D_STATIC_CLIENT, GIPSI_2D_STATIC_SERVER,
+								GIPSI_2D_DYNAMIC_SERVER, GIPSI_3D_STATIC_CLIENT };
+
+
 struct	DisplayDataType {
-	unsigned char	color:2;		// 0: none, 1: RGB, 2: RGBA, 3: not used
+	unsigned char	color:2;		// 0: none, 1: RGB, 2: RGBA, 3: texcoord, 4: tangent, 5: unused
 	unsigned char	normal:1;		
 	unsigned char	texcoord:1;
-	unsigned char	:4;
+	unsigned char	tangent:1;
+	unsigned char	:3;
 };
 
 
@@ -61,7 +74,20 @@ struct	DisplayDataType {
 #define IS_RGBA_ON(x)		(x & 0x02)
 #define IS_NORMAL_ON(x)		(x & 0x04)
 #define IS_TEXCOORD_ON(x)	(x & 0x08)
+#define IS_TANGENT_ON(x)	(x & 0x10)
+#define HAS_EXTRA_ATTRS(x)	(IS_TANGENT_ON(x))
 
+enum ShaderName;
+
+class ShaderParams {
+public:
+	virtual ShaderName	GetShaderName() = 0;
+	virtual char		GetShaderAttributes() = 0;
+
+protected:
+	XMLNode * FindParam(XMLNodeList * params, const char * targetName);
+	const char * GetValue(XMLNodeList * params, const char * targetName);
+};
 
 struct DisplayHeader {
 	DisplayObjectType				objType;
@@ -72,17 +98,94 @@ struct DisplayHeader {
 	float							lineSize;
 };
 
-
 struct DisplayArray {
 	DisplayHeader					header;
 	int								DISPARRAY_NODESIZE;
-	float							*dispArray;		// Display Array
 	int								dA_size;		// Display array size
-	unsigned int					*indexArray;	// Index Array
 	unsigned int					iA_size;		// Index array size
-	pthread_mutex_t					displayMutex;
+	float							*dispArray;		// Display Array
+	unsigned int					*indexArray;	// Index Array
+	bool							full;
 };
 
+class DisplayBufferUnitTest;
+class DisplayManager;
+class LoaderUnitTest;
+class TextureUnitTest;
+
+class DisplayBuffer {
+public:
+	DisplayBuffer(DisplayManager * manager, const DisplayHeader * inheader, DisplayTextureType textType = GIPSI_NO_TEXTURE);
+	~DisplayBuffer();
+
+	DisplayArray * GetReadArray();
+	DisplayArray * GetWriteArray(bool visible);
+	DisplayArray * GetWriteArray(int DISPARRAY_NODESIZE, int dA_size, int iA_size, bool visible);
+
+	void Enqueue();
+	void Dequeue();
+	void ConditionalDequeue();
+
+	bool GetDisplayHeader(DisplayHeader * outheader);
+	void SetDisplayHeader(const DisplayHeader * inheader);
+
+	ShaderParams * GetShaderParams();
+	void SetShaderParams(ShaderParams * newShaderParams);
+
+	const char * GetName(void);
+	void SetName(const char * newName);
+
+	const char * GetObjectName();
+	void SetObjectName(const char * newObjectName);
+
+	void SetNext(DisplayBuffer * newNext);
+	DisplayBuffer * GetNext();
+
+	DisplayTextureType GetTextureType() { return textureType; }
+	int GetNumTextures() { return nTextures; }
+	const char * GetTexture(int i) { return texture[i]; }
+
+	void AddTexture(char * textName);
+
+protected:
+	void DequeueExchange();
+
+	void UpdateDataType();
+
+	// Referenced structs/classes
+	DisplayManager		*manager;
+
+	DisplayHeader		*header;
+
+	ShaderParams		*shaderParams;
+
+	DisplayArray		*data;
+	int					nArrays;
+
+	// DisplayBuffer name
+	char				*name;
+
+	// Object name
+	char				*objectName;
+
+	// Texture information
+	DisplayTextureType	textureType;
+	int					nTextures;
+	char				**texture;
+
+	// Mutex
+	pthread_mutex_t mutex;
+
+	// Indices
+	int					readIndex, writeIndex, queueIndex;
+
+	// Next pointer
+	DisplayBuffer		*next;
+
+	friend DisplayBufferUnitTest;
+	friend LoaderUnitTest;
+	friend TextureUnitTest;
+};
 
 /****************************************************************
  *				DISPLAY MANAGER BASE CLASS						*  
@@ -90,40 +193,126 @@ struct DisplayArray {
 
 class DisplayManager {
 public:
-	DisplayManager(const	DisplayHeader &inheader) {
-		display.header.objType		= inheader.objType;
-		display.header.polyMode		= inheader.polyMode;
-		display.header.shadeMode	= inheader.shadeMode;
-		display.header.dataType		= inheader.dataType;
-		display.header.pointSize	= inheader.pointSize;
-		display.header.lineSize		= inheader.lineSize;
+	DisplayManager(const DisplayHeader * inheader, DisplayTextureType textType = GIPSI_NO_TEXTURE)
+	:	displayBuffer(this, inheader, textType), visible(true) {
+		// We must have a unique name, so we use the local memory address
+		// sxn66 change to the name of object
+		//char name[11];
+		//itoa((int)this, name, 16);
+		//displayBuffer.SetName(name);
 	}
 
-	void	SetDisplayHeader(const	DisplayHeader &inheader) {
-		display.header.objType		= inheader.objType;
-		display.header.polyMode		= inheader.polyMode;
-		display.header.shadeMode	= inheader.shadeMode;
-		display.header.dataType		= inheader.dataType;
-		display.header.pointSize	= inheader.pointSize;
-		display.header.lineSize		= inheader.lineSize;
+	void	GetDisplayHeader(DisplayHeader * outheader) {
+		displayBuffer.GetDisplayHeader(outheader);
 	}
 
-	void	GetDisplayHeader(DisplayHeader &outheader) {
-		outheader.objType		= display.header.objType;
-		outheader.polyMode		= display.header.polyMode;
-		outheader.shadeMode		= display.header.shadeMode;
-		outheader.dataType		= display.header.dataType;
-		outheader.pointSize		= display.header.pointSize;
-		outheader.lineSize		= display.header.lineSize;
+	void	SetDisplayHeader(const DisplayHeader * inheader) {
+		displayBuffer.SetDisplayHeader(inheader);
 	}
 
-	DisplayArray*	GetDisplay(void) { return &display; };
+	void	SetShaderParams(ShaderParams * shaderParams) {
+		displayBuffer.SetShaderParams(shaderParams);
+	}
+
+	DisplayArray*	GetDisplay(void) { return displayBuffer.GetReadArray(); }
+
+	DisplayBuffer*	GetDisplayBuffer(void) { return &displayBuffer; }
 
 	virtual	void	Display(void) {}
 
-protected:
-	DisplayArray	display;
+	virtual void	SetVisible(bool newVisible) { visible = newVisible; }
 
+	/**
+	 * Adds the input texture name to the DisplayBufferData’s list of texture names.
+	 */
+	virtual void	AddTexture(char * textName) { displayBuffer.AddTexture(textName); }
+
+	/**
+	 * Calculate the DISPARRAY_NODESIZE for a DisplayArray.
+	 */
+	virtual int		GetDISPARRAY_NODESIZE(const DisplayHeader * header) = 0;
+
+	/**
+	 * Calculate the iA_size for a DisplayArray.
+	 */
+	virtual int		GetdA_size(int DISPARRAY_NODESIZE) = 0;
+
+	/**
+	 * Calculate the dA_size for a DisplayArray.
+	 */
+	virtual int		GetiA_size(const DisplayHeader * header) = 0;
+
+	/**
+	 * Returns the name of the object that this DisplayManager represents.
+	 */
+	const char *	GetObjectName() { return displayBuffer.GetObjectName(); }
+
+	/**
+	 * Sets the name of the object that this DisplayManager represents.
+	 */
+	void			SetObjectName(const char * newObjectName) { 
+		displayBuffer.SetObjectName(newObjectName); 
+		// sxn66 change to the name of object
+		displayBuffer.SetName(newObjectName);
+	}
+
+protected:
+	bool			visible;
+	DisplayBuffer	displayBuffer;
+
+	friend DisplayBufferUnitTest;
+	friend LoaderUnitTest;
+	friend TextureUnitTest;
+};
+
+/****************************************************************
+ *					POINTCLOUD DISPLAY MANAGER					*  
+ ****************************************************************/
+
+class PointCloudDisplayManager : public DisplayManager {
+public:
+	PointCloudDisplayManager(PointCloud *ingeometry, const DisplayHeader * inheader) :
+	  geometry(ingeometry), DisplayManager(inheader) {}
+
+	void			Display(void);
+
+	int				GetDISPARRAY_NODESIZE(const DisplayHeader * header);
+
+	int				GetdA_size(int DISPARRAY_NODESIZE);
+
+	int				GetiA_size(const DisplayHeader * header);
+
+protected:
+	PointCloud		*geometry;
+};
+
+
+/****************************************************************
+ *					VECTORFIELD DISPLAY MANAGER					*  
+ ****************************************************************/
+
+class VectorFieldDisplayManager : public DisplayManager {
+public:
+	VectorFieldDisplayManager(VectorField *ingeometry, DisplayHeader * inheader) :
+	  geometry(ingeometry), DisplayManager(inheader)
+	{
+		// Change the display header objType to GIPSI_DRAW_LINE
+		DisplayHeader hdr;
+		GetDisplayBuffer()->GetDisplayHeader(&hdr);
+		hdr.objType = GIPSI_DRAW_LINE;
+		GetDisplayBuffer()->SetDisplayHeader(&hdr);
+	}
+
+	void			Display(void);
+
+	int				GetDISPARRAY_NODESIZE(const DisplayHeader * header);
+
+	int				GetdA_size(int DISPARRAY_NODESIZE);
+
+	int				GetiA_size(const DisplayHeader * header);
+
+protected:
+	VectorField		*geometry;
 };
 
 /****************************************************************
@@ -132,30 +321,16 @@ protected:
 
 class TriSurfaceDisplayManager : public DisplayManager {
 public:
-	TriSurfaceDisplayManager(TriSurface *ingeometry, DisplayHeader &inheader) :
-	  geometry(ingeometry), DisplayManager(inheader) {
-		display.DISPARRAY_NODESIZE = 3;
-		
-		char	type = display.header.dataType;
+	TriSurfaceDisplayManager(TriSurface *ingeometry, const DisplayHeader * inheader) :
+		geometry(ingeometry), DisplayManager(inheader) {}
 
-		if(IS_RGB_ON(type))
-			display.DISPARRAY_NODESIZE += 3;
-		else if(IS_RGBA_ON(type))
-			display.DISPARRAY_NODESIZE += 4;
+	void			Display(void);
 
-		if(IS_NORMAL_ON(type))
-			display.DISPARRAY_NODESIZE += 3;
+	int				GetDISPARRAY_NODESIZE(const DisplayHeader * header);
 
-		if(IS_TEXCOORD_ON(type))
-			display.DISPARRAY_NODESIZE += 2;
-		
-		display.dA_size		= geometry->num_vertex * display.DISPARRAY_NODESIZE;
-		display.dispArray	= new float[display.dA_size];
-		display.iA_size		= geometry->num_face * 3;
-		display.indexArray	= new unsigned int[display.iA_size];
-	}
+	int				GetdA_size(int DISPARRAY_NODESIZE);
 
-	void	Display(void);
+	int				GetiA_size(const DisplayHeader * header);
 
 protected:
 	TriSurface		*geometry;
@@ -168,39 +343,79 @@ protected:
 
 class TetVolumeDisplayManager : public DisplayManager {
 public:
-	TetVolumeDisplayManager(TetVolume *ingeometry, DisplayHeader &inheader) :
-	  geometry(ingeometry), DisplayManager(inheader) {
-		display.DISPARRAY_NODESIZE = 3;
+	TetVolumeDisplayManager(TetVolume *ingeometry, const DisplayHeader * inheader) :
+		geometry(ingeometry), DisplayManager(inheader) {}
 
-		char	type = display.header.dataType;
+	void			Display(void);
 
-		if(IS_RGB_ON(type))
-			display.DISPARRAY_NODESIZE += 3;
-		else if(IS_RGBA_ON(type))
-			display.DISPARRAY_NODESIZE += 4;
+	int				GetDISPARRAY_NODESIZE(const DisplayHeader * header);
 
-		if(IS_NORMAL_ON(type))
-			display.DISPARRAY_NODESIZE += 3;
+	int				GetdA_size(int DISPARRAY_NODESIZE);
 
-		if(IS_TEXCOORD_ON(type))
-			display.DISPARRAY_NODESIZE += 2;
-	  
-		display.dA_size		= geometry->num_vertex * display.DISPARRAY_NODESIZE;
-		display.dispArray	= new float[display.dA_size];
-		if (display.header.objType==GIPSI_DRAW_TRIANGLE)
-			display.iA_size		= geometry->num_face * 3;
-		else if (display.header.objType==GIPSI_DRAW_LINE)
-			display.iA_size		= geometry->num_tet * 12;
-		else 
-			error_exit(1,"Unknown object type for TetVolume Display Manager");
-		display.indexArray	= new unsigned int[display.iA_size];
-	}
-
-	void	Display(void);
+	int				GetiA_size(const DisplayHeader * header);
 
 protected:
 	TetVolume		*geometry;
 
+};
+
+
+class TextureDisplayManager : public DisplayManager {
+public:
+	TextureDisplayManager(DisplayTextureType textType, char * formattedFileName);
+	~TextureDisplayManager()
+	{
+		if (textureFile)
+		{
+			delete textureFile;
+			textureFile = NULL;
+		}
+	}
+
+	void			GetDisplayHeader(DisplayHeader * outheader) {}
+
+	void			SetDisplayHeader(const DisplayHeader * inheader) {}
+
+	void			SetVisible(bool newVisible) {}
+
+	void			Display();
+
+	/**
+	 * Overridden method: does nothing.
+	 */
+	void			AddTexture(char * textName) {}
+
+	int				GetDISPARRAY_NODESIZE(const DisplayHeader * header);
+
+	int				GetdA_size(int DISPARRAY_NODESIZE);
+
+	int				GetiA_size(const DisplayHeader * header);
+
+protected:
+	TextureGeometry	*geometry;
+	char			*textureFile;
+	bool			static_texture_sent;
+
+	friend TextureUnitTest;
+};
+
+
+/****************************************************************
+ *					TEST DISPLAY MANAGER					*  
+ ****************************************************************/
+
+class TestDisplayManager : public DisplayManager {
+public:
+	TestDisplayManager(const DisplayHeader * inheader) :
+		DisplayManager(inheader) {}
+
+	void			Display(void) {}
+
+	virtual int		GetDISPARRAY_NODESIZE(const DisplayHeader * header) { return 5; }
+
+	virtual int		GetdA_size(int DISPARRAY_NODESIZE) { return 15; }
+
+	virtual int		GetiA_size(const DisplayHeader * header) { return 10; }
 };
 
 #endif

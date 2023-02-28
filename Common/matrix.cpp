@@ -71,9 +71,28 @@ int Matrix<Real>::save(const char *filename) {
 	return true;
 }
 
-#ifdef ALGEBRA_USE_CBLAS
+//#ifdef ALGEBRA_USE_CBLAS
 // NOTE: Right now only a few LAPACK routines are implemented
 
+// The Intel MKL seems to not use the same function names as the actual CLAPACK
+// library, so need to sneak in the MKL names instead.
+#ifdef ALGEBRA_USE_MKL
+#define USE_MATH_LIBS
+#define dgesdd_ dgesdd
+#define dgetrf_ dgetrf
+#define dgetri_ dgetri
+#define integer int
+#define doublereal double
+#endif
+
+#ifdef ALGEBRA_USE_ATLAS
+#ifdef ALGEBRA_USE_CLAPACK
+#define USE_MATH_LIBS
+#endif
+#endif
+
+
+#ifdef USE_MATH_LIBS
 
 template<>
 void multMV(Vector<double> &result, const Matrix<double> &a, const Vector<double> &v)
@@ -115,11 +134,18 @@ void multMM(Matrix<double> &result, const Matrix<double> &a1, const Matrix<doubl
 
 template<>
 int invM(Matrix<double> &result, const Matrix<double> &M) {
-	double		*work = new double[M.m()*BLOCKSIZE];
+	doublereal		*work = new doublereal[M.m()*BLOCKSIZE];
+	integer			lwork = M.m()*BLOCKSIZE;
+	integer			n, lda;
+	integer			*ipiv = new integer[M.m()]; 
+	integer			info;
+
+//  the ALGEBRA_USE_MKL define's make the above code appear as:
+/*	double		*work = new double[M.m()*BLOCKSIZE];
 	int			lwork = M.m()*BLOCKSIZE;
 	int			n, lda;
 	int			*ipiv = new int[M.m()]; 
-	int			info;
+	int			info;		*/
 
 	ASSERT(M.m() == M.n());
 
@@ -128,8 +154,11 @@ int invM(Matrix<double> &result, const Matrix<double> &M) {
 	n	= result.n();
 	lda = n;
 
-	DGETRF(&n, &n, result.begin(), &lda,  &ipiv[0], &info);
-	DGETRI(&n, result.begin(), &lda, &ipiv[0], &work[0], &lwork, &info);
+	dgetrf_(&n, &n, result.begin(), &lda,  &ipiv[0], &info);
+	dgetri_(&n, result.begin(), &lda, &ipiv[0], &work[0], &lwork, &info);
+	// former MKL function calls:
+	//DGETRF(&n, &n, result.begin(), &lda,  &ipiv[0], &info);
+	//DGETRI(&n, result.begin(), &lda, &ipiv[0], &work[0], &lwork, &info);
 
 	delete[] work;
 	delete[] ipiv;
@@ -140,7 +169,25 @@ int invM(Matrix<double> &result, const Matrix<double> &M) {
 // NOTE: The pseudo inverse is not tested with non-square matrices!!
 template<>
 int pinvM(Matrix<double> &result, const Matrix<double> &M) {
-	int			lwork	= M.m()*M.m()*BLOCKSIZE;
+	
+	integer			lwork	= M.m()*M.m()*BLOCKSIZE;
+	doublereal		*work	= new doublereal[lwork];
+	integer			*iwork	= new integer[8*M.m()];
+	integer			lda, ldu, ldvt;
+	integer			info;
+	integer			m		= M.m();
+	integer			n		= M.n();
+	char		jobu	= 'A';
+	char		jobvt	= 'A';
+	int			lds		= MAX(m, n);
+	doublereal		*S		= new doublereal[MAX(M.m(), M.n())];
+	Matrix<doublereal>	U(m, m, 0.0);
+	Matrix<doublereal>	VT(n, n, 0.0);
+	Matrix<double>	PS(lds, lds, 0.0);
+	Matrix<double>	temp(m, n, 0.0);
+	
+//  the ALGEBRA_USE_MKL define's make the above code appear as:
+/*	int			lwork	= M.m()*M.m()*BLOCKSIZE;
 	double		*work	= new double[lwork];
 	int			*iwork	= new int[8*M.m()];
 	int			lda, ldu, ldvt;
@@ -154,8 +201,8 @@ int pinvM(Matrix<double> &result, const Matrix<double> &M) {
 	Matrix<double>	U(m, m, 0.0);
 	Matrix<double>	VT(n, n, 0.0);
 	Matrix<double>	PS(lds, lds, 0.0);
-	Matrix<double>	temp(m, n, 0.0);
-	
+	Matrix<double>	temp(m, n, 0.0);	*/
+
 	if(result.begin() != M.begin()) result = M;
 
 	lda		= m;
@@ -165,8 +212,10 @@ int pinvM(Matrix<double> &result, const Matrix<double> &M) {
 	transposeM(result, M);
 
 	printf("\tPerforming SVD ..."); 
-	DGESDD(&jobu, &m, &n, result.begin(), &lda, S, U.begin(), &ldu, VT.begin(), &ldvt, 
-			&work[0], &lwork, &iwork[0], &info);
+	dgesdd_(&jobu, &m, &n, result.begin(), &lda, S, U.begin(), &ldu, VT.begin(), &ldvt, &work[0], &lwork, &iwork[0], &info);
+	// former MKL function call:
+	//DGESDD(&jobu, &m, &n, result.begin(), &lda, S, U.begin(), &ldu, VT.begin(), &ldvt, 
+	//		&work[0], &lwork, &iwork[0], &info);
 
 	printf("\tInverting S ...");
 	for(int i=0; i<lds; i++) {
@@ -186,3 +235,4 @@ int pinvM(Matrix<double> &result, const Matrix<double> &M) {
 
 
 #endif
+

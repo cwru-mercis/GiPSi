@@ -1,0 +1,13 @@
+<shader>
+	<name>bump</name>
+	<params>
+		<param>
+			<name>texUnitBase</name>
+			<value>1</value>
+		</param>
+		<param>
+			<name>texUnitHeight</name>
+			<value>2</value>
+		</param>
+	</params>
+</shader>

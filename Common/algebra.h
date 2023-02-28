@@ -52,11 +52,33 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 
 typedef double Real;
 
-// NOTE: Right now only MKL is used
-// Need to predefine ALGEBRA_USE_CBLAS to use CBLAS and LAPACK
-#ifdef ALGEBRA_USE_CBLAS
-#include "MKL.h"
-#else
+/*
+// ALGEBRA_USE_MKL implies that the Intel Math libraries should be use
+// which implement both CBLAS and LAPACK.  see:
+// http://www.intel.com/cd/software/products/asmo-na/eng/perflib/mkl/index.htm
+//
+// ALGEBRA_USE_ATLAS implies that the ATLAS implementation of CBLAS, which are
+// optimized for your system when you compile it, should be used.  see:
+// http://math-atlas.sourceforge.net/ or http://www.netlib.org/atlas/
+//
+// ALGEBRA_USE_CLAPACK implies that the C version of the LAPACK implementation
+// is used.  see:
+// http://www.netlib.org/clapack/
+*/
+#ifdef ALGEBRA_USE_MKL
+#include "mkl.h"
+#elif defined ALGEBRA_USE_ATLAS
+#ifdef ALGEBRA_USE_CLAPACK
+extern "C" {
+#include <cblas.h>
+#include <f2c.h>
+#include <clapack.h>
+}
+#else		// ALGEBRA_USE_CLAPACK
+// else it will default to general implementation
+#define ALGEBRA_USE_GENERAL
+#endif
+#else		// ALGEBRA_USE_MKL and ALGEBRA_USE_ATLAS
 // else it will default to general implementation
 #define ALGEBRA_USE_GENERAL
 #endif
@@ -86,6 +108,14 @@ inline	Real	min(Real	a,	Real b)
 	else
 		return b;
 }
+
+inline	Real	min(Real x, Real y, Real z) {
+	if (x < y && x < z) 
+		return x;
+	if (y < z) 
+		return y;
+	return z;
+}
 #endif
 
 #ifndef max
@@ -96,8 +126,6 @@ inline	Real	max(Real	a,	Real b)
 	else
 		return a;
 }
-#endif
-
 
 inline	Real	max(Real x, Real y, Real z) {
 	if (x > y && x > z) 
@@ -107,15 +135,7 @@ inline	Real	max(Real x, Real y, Real z) {
   
 	return z;
 }
-
-
-inline	Real	min(Real x, Real y, Real z) {
-	if (x < y && x < z) 
-		return x;
-	if (y < z) 
-		return y;
-	return z;
-}
+#endif
 
 
 inline int		LineIntersect(	Vector<Real> &A0, Vector<Real> &A1, Real &s,

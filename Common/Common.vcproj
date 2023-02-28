@@ -1,97 +1,149 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8.00"
 	Name="Common"
 	ProjectGUID="{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}"
-	Keyword="Win32Proj">
+	RootNamespace="Common"
+	Keyword="Win32Proj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="4"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D_CRT_SECURE_NO_DEPRECATE"
 				Optimization="0"
-				PreprocessorDefinitions="ALGEBRA_USE_CBLAS;WIN32;_DEBUG;_LIB"
-				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories="..\Common"
+				PreprocessorDefinitions="ALGEBRA_USE_MKL;WIN32;_DEBUG"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/Common.lib"/>
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="4"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="0"
-				OptimizeForProcessor="0"
-				PreprocessorDefinitions="ALGEBRA_USE_CBLAS; WIN32;_NDEBUG;_LIB"
+				AdditionalIncludeDirectories="..\Common"
+				PreprocessorDefinitions="ALGEBRA_USE_MKL;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/Common.lib"/>
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -100,71 +152,104 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath=".\algebra.cpp">
+				RelativePath=".\algebra.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\errors.cpp">
+				RelativePath=".\errors.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\load_neutral.cpp">
+				RelativePath=".\GiPSiException.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\load_node.cpp">
+				RelativePath=".\load_neutral.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\load_obj.cpp">
+				RelativePath=".\load_node.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\matrix.cpp">
+				RelativePath=".\load_obj.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\read_tga.cpp">
+				RelativePath=".\logger.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\timing.cpp">
+				RelativePath=".\matrix.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\vector.cpp">
+				RelativePath=".\read_tga.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\timing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath=".\algebra.h">
+				RelativePath=".\algebra.h"
+				>
 			</File>
 			<File
-				RelativePath=".\errors.h">
+				RelativePath=".\errors.h"
+				>
 			</File>
 			<File
-				RelativePath=".\load_mesh.h">
+				RelativePath=".\GiPSiException.h"
+				>
 			</File>
 			<File
-				RelativePath=".\matrix.h">
+				RelativePath=".\load_mesh.h"
+				>
 			</File>
 			<File
-				RelativePath=".\read_tga.h">
+				RelativePath=".\logger.h"
+				>
 			</File>
 			<File
-				RelativePath=".\sparse_matrix.h">
+				RelativePath=".\matrix.h"
+				>
 			</File>
 			<File
-				RelativePath=".\timing.h">
+				RelativePath=".\read_tga.h"
+				>
 			</File>
 			<File
-				RelativePath=".\vector.h">
+				RelativePath=".\sparse_matrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\timing.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vector.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
-			<File
-				RelativePath=".\ReadMe.txt">
-			</File>
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 		</Filter>
 	</Files>
 	<Globals>

@@ -18,12 +18,10 @@ All Rights Reserved.
 Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 */
 
-/*    load_neutral.cpp
- *
- *    v0.1.0
- *
- *
- */
+////	LOAD_NEUTRAL.CPP v0.1.0
+////
+////////////////////////////////////////////////////////////////
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -69,8 +67,7 @@ LoadData* LoadNeutral(const char *filename)
     int			i, j;
     char		buffer[MAX_BUFFER_SIZE], 
 				*token;
-    int			dim, 
-				node_no, 
+    int			node_no, 
 				node_offset;
     double		x, y, z;
     LoadData	*data;

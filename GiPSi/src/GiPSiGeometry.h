@@ -46,8 +46,7 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 #include "algebra.h"
 #include "errors.h"
 #include "load_mesh.h"
-
-
+#include "read_tga.h"
 
 
 /****************************************************************
@@ -58,10 +57,20 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 class Geometry {
 public:
 	Vector<Real>			color;			// Global color
-	Real					minx, maxx, miny, maxy, minz, maxz;
+	Real					minx, maxx, miny, maxy, minz, maxz;  // Axis Aligned Bounding Box
+	bool					modified;       // This is an optional flag that mat be used
+	                                        //   by individual SimObject's to indicate
+											//   if a geometry object has been modified or not.
+											//   Note that this flag is provided for SimObject
+											//   level optimizations and will be ignored by the 
+											//   display managers defined in GiPSiDisplay, i.e.,
+											//   the geometries will be processed by the display 
+											//   managers regardless of the modified flag 
+											//   condition.
+											//
 
 	// Constructors
-	Geometry() : color(4, "1.0 0.0 0.0 1.0"){}
+	Geometry() : color(4, "1.0 0.0 0.0 1.0"), modified(true) {}
 
 	// Display manager for the geometry
 	virtual void		SetupDisplay(void) {}
@@ -71,7 +80,9 @@ public:
 	virtual void		Load(LoadData*) {}
 	// Basic transformations
 	virtual void		Translate(float tx, float ty, float tz) {}
-    virtual void		Rotate(Real angle, Real ax, Real ay, Real az) {}
+	virtual void		Translate(Vector<Real> p) {}
+	virtual void		Rotate(Real angle, Real ax, Real ay, Real az) {}
+    virtual void		Rotate(Matrix<Real> R) {}
 	virtual void		Scale(float sx, float sy, float sz) {}
 
 protected:
@@ -111,10 +122,11 @@ public:
     int						valence;	// Degree
 	Vector<Real>			color;		// Color
 	Vector<Real>			texcoord;	// Texture coordinates
+	Vector<Real>			tangent;	// Tangent
 
 	// Constructors
 	Vertex()	:	valence(0), 
-					n(3, "1.0 0.0 0.0"), color(4, "1.0 0.0 0.0 1.0"), texcoord(2, "0.0 0.0") {}
+					n(3, "1.0 0.0 0.0"), color(4, "1.0 0.0 0.0 1.0"), texcoord(2, "0.0 0.0"), tangent(3, "0.0 0.0 0.0") {}
 	
 	void	init(	unsigned int	refid,
 					Real			*pos,
@@ -125,17 +137,10 @@ public:
 		this->refid = refid;
 		this->pos	= pos;
 		// The Vertex class is initialized by value using the copy constructor of the Vector<> class
-		// The color is used to store the tangent in lack of a better options
 		if(n != NULL)			this->n			= n;
 		if(color != NULL)		this->color		= color;
 		if(texcoord != NULL)	this->texcoord	= texcoord;
-		if(tangent != NULL)
-		{
-			// Clamp to 0..1 range
-			this->color[0] = tangent[0] * 0.5 + 0.5;
-			this->color[1] = tangent[1] * 0.5 + 0.5;
-			this->color[2] = tangent[2] * 0.5 + 0.5;
-		}
+		if(tangent != NULL)		this->tangent	= tangent;
 	}
 
 };
@@ -197,11 +202,61 @@ public:
 		color[0] = r;	color[1] = g;	color[2] = b;	color[3] = a;
 	}
 
-	void			Load(char*){};
+	void init(unsigned int num_vertex)
+	{
+		// Allocate geometry memory
+		vertex = new Vertex[num_vertex];
+		if(vertex == NULL) {
+			error_exit(-1, "Cannot allocate memory for vertices!\n");
+		}
+
+		this->num_vertex	= num_vertex;		
+	}
+
+	void			Load(char*);
+	void			Load(LoadData*);
 	void			Translate(float tx, float ty, float tz);
-    void			Rotate(Real angle, Real ax, Real ay, Real az);
+	void			Translate(Vector<Real> p);
+	void			Rotate(Real angle, Real ax, Real ay, Real az);
+	void			Rotate(Matrix<Real> R);
 	void			Scale(float sx, float sy, float sz);
+	void			Scale(Vector<Real> s);
+
 };
+
+
+/****************************************************************
+ *						VECTOR FIELD GEOMETRY					*  
+ ****************************************************************/
+class VectorField : public PointCloud {
+public:
+    Vertex				*field_vector;				// Vectors of the field
+
+	// Constructors
+	VectorField(float r = 0.5, float g = 0.5, float b = 0.5, float a = 1.0) {
+		color[0] = r;	color[1] = g;	color[2] = b;	color[3] = a;
+	}
+
+	void init(unsigned int num_vertex)
+	{
+		// Allocate geometry memory
+		field_vector = new Vertex[num_vertex];
+		if(field_vector == NULL) {
+			error_exit(-1, "Cannot allocate memory for the vector field!\n");
+		}
+		PointCloud::init(num_vertex);
+	}
+
+	void			Load(char*);
+	void			Load(LoadData*);
+	void			Translate(float tx, float ty, float tz);
+	void			Translate(Vector<Real> p);
+	void			Rotate(Real angle, Real ax, Real ay, Real az);
+	void			Rotate(Matrix<Real> R);
+	void			Scale(float sx, float sy, float sz);
+	void			Scale(Vector<Real> s);
+};
+
 
 
 /****************************************************************
@@ -215,7 +270,7 @@ public:
 	unsigned int		num_face;				// Number of faces
 
 	// Constructors
-	TriSurface(float r = 0.5, float g = 0.5, float b = 0.5, float a = 1.0) {
+	TriSurface(Real r = 0.5, Real g = 0.5, Real b = 0.5, Real a = 1.0) {
 		color[0] = r;	color[1] = g;	color[2] = b;	color[3] = a;
 	}
 
@@ -241,7 +296,6 @@ public:
 	void			Load(LoadData*);
 	void			calcNormals(void);			// Updates normals
 };
-
 
 
 /****************************************************************
@@ -291,8 +345,12 @@ public:
  *						BASE BOUNDARY							*  
  ****************************************************************/
 class Boundary : public TriSurface {
+protected:
+	bool			CollisionEnabledBoundaryType;
 public:
-
+	Boundary():CollisionEnabledBoundaryType(false) {};
+	virtual void	ResetBoundaryCondition(void) {}
+	bool			isCollisionEnabledBoundaryType() { return CollisionEnabledBoundaryType; }
 };
 
 /****************************************************************
@@ -300,10 +358,35 @@ public:
  ****************************************************************/
 class Domain : public TetVolume {
 public:
-
+	virtual void	ResetDomainVariables(void) {}
 };
 
 int				isInElement( Vector<Real>	&x,	Tetrahedra	&e);
 Tetrahedra*		findElement(TetVolume &mesh, Vector<Real> &x);
 
+
+/****************************************************************
+ *						TEXTURE GEOMETRY						*  
+ ****************************************************************/
+
+// Base geometry class
+class TextureGeometry : public Geometry {
+public:
+	byte * data;
+	int width, height, depth;
+
+	// Constructors
+	/**
+	 * Default constructor.  Initializes dimensions to zero, and data to NULL.
+	 */
+	TextureGeometry() : data(NULL), width(0), height(0) {}
+	~TextureGeometry() { if (data) delete data; data = NULL; }
+	// Loader
+	virtual void		Load(char * fileName);
+
+protected:
+	
+};
+
 #endif
+

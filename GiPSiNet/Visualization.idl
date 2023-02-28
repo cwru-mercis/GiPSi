@@ -1,0 +1,33 @@
+enum	CORBADisplayObjectType  { CORBAGIPSI_DRAW_POINT, CORBAGIPSI_DRAW_LINE, CORBAGIPSI_DRAW_TRIANGLE, 
+				CORBAGIPSI_DRAW_QUAD, CORBAGIPSI_DRAW_POLYGON, CORBAGIPSI_DRAW_CUSTOM };
+
+enum	CORBADisplayPolygonMode  { CORBAGIPSI_POLYGON_OUTLINE, CORBAGIPSI_POLYGON_FILL };
+
+enum	CORBADisplayShadeMode  { CORBAGIPSI_SHADE_FLAT, CORBAGIPSI_SHADE_SMOOTH };
+
+struct 	CORBADisplayHeader{
+	CORBADisplayObjectType 	objType;
+	CORBADisplayPolygonMode polyMode;
+	CORBADisplayShadeMode 	shadeMode;
+	char 			dataType;
+	float			pointSize;
+	float			lineSize;
+};
+
+typedef sequence<float>	FloatVector;
+
+typedef sequence<unsigned long>	LongVector;
+
+struct	CORBADisplayArray{
+	CORBADisplayHeader	header;
+	long			DISPARRAY_NODESIZE;
+	long			dA_size;	// Display array size
+	unsigned long		iA_size;	// Index array size
+	FloatVector		dispArray;	// Display Array
+	LongVector		indexArray;	// Index Array
+	boolean			full;
+};
+
+interface CORBASKP{
+	short setArray(in string displayBufferName, in CORBADisplayArray displayArray);
+};

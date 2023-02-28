@@ -1,0 +1,59 @@
+project(GiPSiNet_HM_Lib) : taoexe, portableserver {
+  dynamicflags += HAPTICS_COMMON_BUILD_DLL
+  idlflags     += -Wb,export_macro=HAPTICS_COMMON_Export -Wb,export_include=haptics_common_export.h
+  Header_Files {    
+    HapticsS.h
+    HapticsC.h
+  }
+  Source_Files {
+    HapticsS.cpp
+    HapticsC.cpp
+  }
+  IDL_Files {
+    Haptics.idl
+  }
+  Inline_Files {
+    HapticsS.inl
+    HapticsC.inl
+  }
+}
+
+project(GiPSiNet_SK_Lib) : taoexe, portableserver {
+  dynamicflags += GIPSINETSK_COMMON_BUILD_DLL
+  idlflags     += -Wb,export_macro=GIPSINETSK_COMMON_Export -Wb,export_include=gipsinetsk_common_export.h
+  Header_Files {    
+    GiPSiNetSKS.h
+    GiPSiNetSKC.h
+  }
+  Source_Files {
+    GiPSiNetSKS.cpp
+    GiPSiNetSKC.cpp
+  }
+  IDL_Files {
+    GiPSiNetSK.idl
+  }
+  Inline_Files {
+    GiPSiNetSKS.inl
+    GiPSiNetSKC.inl
+  }
+}
+
+project(GiPSiNet_VE_Lib) : taoexe, portableserver {
+  dynamicflags += VISUALIZATION_COMMON_BUILD_DLL
+  idlflags     += -Wb,export_macro=VISUALIZATION_COMMON_Export -Wb,export_include=visualization_common_export.h
+  Header_Files {    
+    VisualizationS.h
+    VisualizationC.h
+  }
+  Source_Files {
+    VisualizationS.cpp
+    VisualizationC.cpp
+  }
+  IDL_Files {
+    Visualization.idl
+  }
+  Inline_Files {
+    VisualizationS.inl
+    VisualizationC.inl
+  }
+}

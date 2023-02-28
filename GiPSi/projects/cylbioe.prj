@@ -1,6 +1,0 @@
-P SIMPLE
-f CYLINDER objects\hollowcylinder.node 0.001 0.1 100.0 10.0 1.0 1.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 1.0 1.0 0.0 1.0 0.0 0.0
-e ELECYL objects\hollowcylinder.node 0.001 2.0 40.0 0.25 0.1 1.0 0.1 1.0 0.0 0.0 0.0 1.0 1.0 1.0 0.0 1.0 0.0 0.0
-l BLOOD objects\cylinder.obj 0.001 98.0 100.0 99.0 1.0 0.0 0.01 0.01 1.0 1.0 1.0 1.0 0.0 0.0 0.0 1.0 1.0 1.0 0.0 1.0 0.0 0.0 
-c fe 0 1 null 30.0 0.0 0.0
-c fl 0 2 objects\hollowtocylinder.corr 0.0

@@ -15,7 +15,7 @@ The Initial Developers of the Original Code are Tolga Goktekin and M. Cenk Cavus
 Portions created by Tolga Goktekin and M. Cenk Cavusoglu are Copyright (C) 2004.
 All Rights Reserved.
 
-Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
+Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu, Suriya Natsupakpong
 */
 
 ////	GiPSiGeometry.cpp v1.0
@@ -39,12 +39,12 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 #define		DELIM 10
 
 
-////////////////////////////////////////////////////////////////
-//
-//	isInElement()
-//
-//		Tests if a point is inside a Triangle
-//
+/**
+ * Test if a point is inside a Triangle
+ * 
+ * @param x Point coordinates.
+ * @param e Triangle boundaries for test.
+ */
 int	isInElement( Vector<Real>	&x,	Triangle	&e) {
 	Vector<Real>	&p0 = e.vertex[0]->pos, 
 					&p1 = e.vertex[1]->pos,
@@ -66,12 +66,12 @@ int	isInElement( Vector<Real>	&x,	Triangle	&e) {
 }
 
 
-////////////////////////////////////////////////////////////////
-//
-//	isInElement()
-//
-//		Tests if a point is inside a Tetrahedra
-//
+/**
+ * Test if a point is inside a Tetrahedra
+ * 
+ * @param x Point coordinates.
+ * @param e Tetrahedra boundaries for test.
+ */
 int	isInElement( Vector<Real>	&x,	Tetrahedra	&e) {
 	Vector<Real>	&p0 = e.vertex[0]->pos, 
 					&p1 = e.vertex[1]->pos,
@@ -89,12 +89,12 @@ int	isInElement( Vector<Real>	&x,	Tetrahedra	&e) {
 }
 
 
-////////////////////////////////////////////////////////////////
-//
-//	findElement()
-//
-//		Finds the tetrahedra that contains point x
-//
+/**
+ * Finds the tetrahedra that contains point x
+ * 
+ * @param mesh Mesh containing list of tetrahedra.
+ * @param x Point to test for.
+ */
 Tetrahedra* findElement(TetVolume &mesh, Vector<Real> &x)
 {
 	unsigned int	i;
@@ -115,54 +115,87 @@ Tetrahedra* findElement(TetVolume &mesh, Vector<Real> &x)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	TriSurface::calcNormals()
-//
-//		Calculates the face and vertex normals of the object
-//
-void TriSurface::calcNormals(void)
+/**
+ * Reads in .obj file.
+ * 
+ * @param basename Name of file to read.
+ */
+void PointCloud::Load(char *basename)   
 {
-	Vertex					*v0, *v1, *v2;
-	static Vector<Real>		a(3), b(3), c(3);
-	Triangle				*f;
-	unsigned int			i;
+	char		*ext;
+	LoadData	*data;
 
-	// Find normals of faces
-	for(i = 0; i < num_face; i++) {
-		f = &(face[i]);
-		v0 = f->vertex[0];
-		v1 = f->vertex[1];
-		v2 = f->vertex[2];
-   
-		subVV(a, v0->pos, v1->pos);		// a = v0 - v1
-		subVV(b, v1->pos, v2->pos);		// b = v1 - v2
-   
-		crossVV(c, a, b);				// c = a x b
-		c.normalize();
-   
-		f->n = c;
-
-		// Add each face normal to vertices
-		v0->n += f->n;
-		v1->n += f->n;
-		v2->n += f->n;
+	ext=strrchr(basename, '.');
+	if (ext==NULL)
+	{
+		error_exit(-1, "Unknown triangle surface file type.\n");
 	}
 
-	// Normalize the vertex normals
-	for(i = 0; i < num_vertex; i++) {
-		vertex[i].n.normalize();
-	} 
+	if (!strcmp(ext, ".obj"))
+	{
+		// Load obj file format
+		data = LoadObj(basename);
+	}
+	else if (!strcmp(ext, ".3ds"))
+	{
+		// Load 3ds file format
+		// TODO: Add 3ds loader
+		error_exit(-1, "3ds loader not implemented\n");
+	}
+	else 
+	{
+		error_exit(-1, "Unknown triangle surface file type.\n");
+	}
+
+	Load(data);
+	
+	// Clean up memory
+
+	delete [] data->node;
+	delete [] data->face;
+	delete data;
+	data = NULL;
 }
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	PointCloud::Translate()
-//
-//		Move the object
-//
+/**
+ * Reads in .obj file data.
+ * 
+ * @param data Verticies of object.
+ */
+void PointCloud::Load(LoadData *data)
+{
+	unsigned int	i;
+
+	init(data->num_node);
+  
+	/****************************************/
+	/*	Create vertices						*/
+	/****************************************/
+	for(i=0; i<num_vertex; i++) {
+		vertex[i].init(i, data->node[i].pos, data->node[i].normal, color.begin(), NULL, NULL);		
+	}
+
+	// NOTE: The face structure is filled out correctly
+
+	minx = data->minx;
+	maxx = data->maxx;
+	miny = data->miny;
+	maxy = data->maxy;
+	minz = data->minz;
+	maxz = data->maxz;
+}
+
+
+
+/**
+ * Translate the object by the indicated amount.
+ * 
+ * @param tx Change in x position.
+ * @param ty Change in y position.
+ * @param tz Change in z position.
+ */
 void PointCloud::Translate(float tx, float ty, float tz)
 {
 	unsigned int	i;
@@ -178,12 +211,32 @@ void PointCloud::Translate(float tx, float ty, float tz)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	PointCloud::Scale()
-//
-//		Scale the object
-//
+/**
+ * Translate the object by the indicated amount.
+ * 
+ * @param p displacement vector
+ */
+void PointCloud::Translate(Vector<Real> p)
+{
+	ASSERT( (p.dim()==3) );
+	unsigned int	i;
+	Vertex			*v;
+
+	for(i = 0; i < num_vertex; i++) {
+		v = &(vertex[i]);
+		v->pos += p;
+	}
+}
+
+
+
+/**
+ * Scale the object by the indicated amount.
+ * 
+ * @param sx X scaling.
+ * @param sy Y scaling.
+ * @param sz Z scaling.
+ */
 void PointCloud::Scale(float sx, float sy, float sz)
 {
 	unsigned int	i;
@@ -199,12 +252,33 @@ void PointCloud::Scale(float sx, float sy, float sz)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	PointCloud::Rotate()
-//
-//		Rotates the object around the specified axis a
-//
+/**
+ * Scale the object by the indicated amount.
+ * 
+ * @param s scale vector
+ */
+void PointCloud::Scale(Vector<Real> s)
+{
+	ASSERT( (s.dim()==3) );
+	unsigned int	i;
+	Vertex			*v;
+
+	for(i = 0; i < num_vertex; i++) {
+		v = &(vertex[i]);
+		v->pos[0] *= s[0];
+		v->pos[1] *= s[1];
+		v->pos[2] *= s[2];
+	}
+}
+
+/**
+ * Rotate the object around a given axis.
+ * 
+ * @param angle Angle to rotate by.
+ * @param ax Axis x coord.
+ * @param ay Axis y coord.
+ * @param az Axis z coord.
+ */
 void PointCloud::Rotate(Real angle, Real ax, Real ay, Real az)
 {
 	unsigned int	i;
@@ -238,14 +312,260 @@ void PointCloud::Rotate(Real angle, Real ax, Real ay, Real az)
 	}
 }
 
+/**
+ * Rotate the object using a given rotation matrix.
+ * 
+ * @param R rotation matrix to be used in the transformation
+ *
+ */
+void PointCloud::Rotate(Matrix<Real> R)
+{
+	ASSERT( (R.m()==3) && (R.n()==3) );
+	unsigned int	i;
+	Vertex			*v;
+	for(i = 0; i < num_vertex; i++) {
+		v = &(vertex[i]);
+		v->pos = R * v->pos;
+	}
+}
+
+/**
+ * Reads in .obj file.
+ * 
+ * @param basename Name of file to read.
+ */
+void VectorField::Load(char *basename)   
+{
+	char		*ext;
+	LoadData	*data;
+
+	ext=strrchr(basename, '.');
+	if (ext==NULL)
+	{
+		error_exit(-1, "Unknown triangle surface file type.\n");
+	}
+
+	if (!strcmp(ext, ".obj"))
+	{
+		// Load obj file format
+		data = LoadObj(basename);
+	}
+	else if (!strcmp(ext, ".3ds"))
+	{
+		// Load 3ds file format
+		// TODO: Add 3ds loader
+		error_exit(-1, "3ds loader not implemented\n");
+	}
+	else 
+	{
+		error_exit(-1, "Unknown triangle surface file type.\n");
+	}
+
+	Load(data);
+	
+	// Clean up memory
+
+	delete [] data->node;
+	delete [] data->face;
+	delete data;
+	data = NULL;
+}
 
 
-////////////////////////////////////////////////////////////////
-//
-//	TriSurface::Load()
-//
-//		Reads in .obj file
-//
+
+/**
+ * Reads in .obj file data.
+ * 
+ * @param data Verticies of object.
+ */
+void VectorField::Load(LoadData *data)
+{
+	unsigned int	i;
+	Real zero_vector[3] = {0.0, 0.0, 0.0};
+
+	init(data->num_node);
+  
+	/****************************************/
+	/*	Create vertices						*/
+	/****************************************/
+	for(i=0; i<num_vertex; i++) {
+		vertex[i].init(i, data->node[i].pos, data->node[i].normal, color.begin(), NULL, NULL);
+		field_vector[i].init(i, zero_vector, zero_vector, color.begin(), NULL, NULL);		
+	}
+
+	// NOTE: The face structure is filled out correctly
+
+	minx = data->minx;
+	maxx = data->maxx;
+	miny = data->miny;
+	maxy = data->maxy;
+	minz = data->minz;
+	maxz = data->maxz;
+}
+
+
+
+/**
+ * Translate the object by the indicated amount.
+ * 
+ * @param tx Change in x position.
+ * @param ty Change in y position.
+ * @param tz Change in z position.
+ */
+void VectorField::Translate(float tx, float ty, float tz)
+{
+	PointCloud::Translate(tx,ty,tz);
+}
+
+
+/**
+ * Translate the object by the indicated amount.
+ * 
+ * @param p displacement vector
+ */
+void VectorField::Translate(Vector<Real> p)
+{
+	PointCloud::Translate(p);
+}
+
+
+/**
+ * Scale the object by the indicated amount.
+ * 
+ * @param sx X scaling.
+ * @param sy Y scaling.
+ * @param sz Z scaling.
+ */
+void VectorField::Scale(float sx, float sy, float sz)
+{
+	PointCloud::Scale(sx,sy,sz);
+}
+
+
+/**
+ * Scale the object by the indicated amount.
+ * 
+ * @param s scale vector
+ */
+void VectorField::Scale(Vector<Real> s)
+{
+	PointCloud::Scale(s);
+}
+
+
+/**
+ * Rotate the object around a given axis.
+ * 
+ * @param angle Angle to rotate by.
+ * @param ax Axis x coord.
+ * @param ay Axis y coord.
+ * @param az Axis z coord.
+ */
+void VectorField::Rotate(Real angle, Real ax, Real ay, Real az)
+{
+	// First rotate the underlying point cloud
+	PointCloud::Rotate(angle, ax, ay, az);
+
+	// Then rotate the vectors
+	unsigned int	i;
+	Vertex			*v;
+	Matrix<Real>	R(3, 3);
+	Real			s	= (Real) cos(angle/2.0);
+	Real			sp	= (Real) sin(angle/2.0);
+	Real			a	= ax*sp;
+	Real			b	= ay*sp;
+	Real			c	= az*sp;
+	Real			l	= (Real) sqrt(a*a + b*b + c*c + s*s);
+
+	a /= l;
+	b /= l;
+	c /= l;
+	s /= l;
+
+	R[0][0] = 1-2*b*b-2*c*c;
+	R[0][1] = 2*a*b-2*s*c;
+	R[0][2] = 2*a*c+2*s*b;
+	R[1][0] = 2*a*b+2*s*c;
+	R[1][1] = 1-2*a*a-2*c*c;
+	R[1][2] = 2*b*c-2*s*a;
+	R[2][0] = 2*a*c-2*s*b;
+	R[2][1] = 2*b*c+2*s*a;
+	R[2][2] = 1-2*a*a-2*b*b;
+
+	for(i = 0; i < num_vertex; i++) {
+		v = &(field_vector[i]);
+		v->pos = R * v->pos;
+	}	
+}
+
+/**
+ * Rotate the object using a given rotation matrix.
+ * 
+ * @param R rotation matrix to be used in the transformation
+ *
+ */
+void VectorField::Rotate(Matrix<Real> R)
+{
+	// First rotate the underlying point cloud
+	PointCloud::Rotate(R);
+
+	// Then rotate the vectors
+	unsigned int	i;
+	Vertex			*v;
+	for(i = 0; i < num_vertex; i++) {
+		v = &(field_vector[i]);
+		v->pos = R * v->pos;
+	}	
+}
+
+
+
+
+
+/**
+ * Calculates the face and vertex normals of the object
+ */
+void TriSurface::calcNormals(void)
+{
+	Vertex					*v0, *v1, *v2;
+	static Vector<Real>		a(3), b(3), c(3);	
+	Triangle				*f;
+	unsigned int			i;
+
+	// Find normals of faces
+	for(i = 0; i < num_face; i++) {
+		f = &(face[i]);
+		v0 = f->vertex[0];
+		v1 = f->vertex[1];
+		v2 = f->vertex[2];
+   
+		subVV(a, v0->pos, v1->pos);		// a = v0 - v1
+		subVV(b, v1->pos, v2->pos);		// b = v1 - v2
+   
+		crossVV(c, a, b);				// c = a x b
+		c.normalize();
+   
+		f->n = c;
+
+		// Add each face normal to vertices
+		v0->n += f->n;
+		v1->n += f->n;
+		v2->n += f->n;
+	}
+
+	// Normalize the vertex normals
+	for(i = 0; i < num_vertex; i++) {
+		vertex[i].n.normalize();
+	} 
+}
+
+
+
+/**
+ * Reads in .obj file.
+ * 
+ * @param basename Name of file to read.
+ */
 void TriSurface::Load(char *basename)   
 {
 	char		*ext;
@@ -285,12 +605,11 @@ void TriSurface::Load(char *basename)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	TriSurface::Load()
-//
-//		Reads in .obj files
-//
+/**
+ * Reads in .obj file data.
+ * 
+ * @param data Verticies of object.
+ */
 void TriSurface::Load(LoadData *data)
 {
 	unsigned int	i;
@@ -301,7 +620,7 @@ void TriSurface::Load(LoadData *data)
 	/*	Create vertices						*/
 	/****************************************/
 	for(i=0; i<num_vertex; i++) {
-		vertex[i].init(i, data->node[i].pos, data->node[i].normal, color.begin(), data->node[i].texcoords, data->node[i].tangent);
+		vertex[i].init(i, data->node[i].pos, data->node[i].normal, color.begin(), data->node[i].texcoords, data->node[i].tangent);		
 	}
 
 	// NOTE: The vertex structure is filled out correctly
@@ -329,17 +648,13 @@ void TriSurface::Load(LoadData *data)
 }
 
 
-
-////////////////////////////////////////////////////////////////
-//
-//	TetVolume::calcNormals()
-//
-//		Calculates the face and vertex normals of the object
-//
+/**
+ * Calculates the face and vertex normals of the object
+ */
 void TetVolume::calcNormals(void)
 {
 	Vertex					*v0, *v1, *v2;
-	static Vector<Real>		a(3), b(3), c(3);
+	static Vector<Real>		a(3), b(3), c(3);	
 	Triangle				*f;
 	unsigned int			i;
 
@@ -372,12 +687,11 @@ void TetVolume::calcNormals(void)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	TetVolume::Load()
-//
-//		Reads in .node and .ele files
-//
+/**
+ * Reads in .obj file.
+ * 
+ * @param basename Name of file to read.
+ */
 void TetVolume::Load(char *basename)   
 {
 	char		*ext, *name;
@@ -416,12 +730,11 @@ void TetVolume::Load(char *basename)
 
 
 
-////////////////////////////////////////////////////////////////
-//
-//	TetVolume::Load()
-//
-//		Reads in .node and .ele files
-//
+/**
+ * Reads in .obj file data.
+ * 
+ * @param data Verticies of object.
+ */
 void TetVolume::Load(LoadData *data)   
 {
 	unsigned int	i;
@@ -470,4 +783,31 @@ void TetVolume::Load(LoadData *data)
 	maxy = data->maxy;
 	minz = data->minz;
 	maxz = data->maxz;
+}
+
+
+/**
+ * Loads the input .TGA file data and dimensions into the TextureGeometry’s data members.
+ * 
+ * @param fileName Name of file to read.
+ */
+void TextureGeometry::Load(char * fileName)
+{
+	// Load image from tga file
+
+	TGA * TGAImage	= new TGA(fileName);
+
+	// Use to dimensions of the image as the texture dimensions
+
+	this->width		= TGAImage->GetWidth();
+	this->height	= TGAImage->GetHeigth();
+	int dataSize	= this->width * this->height * (TGAImage->GetPixelDepth()/8);
+	this->data		= new byte[dataSize];
+	// Copy texture pixel data into our data member
+	for (int i = 0; i < dataSize; i++)
+	{
+		this->data[i] = TGAImage->GetPixels()[i];
+	}
+
+	delete TGAImage;
 }

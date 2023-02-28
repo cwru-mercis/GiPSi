@@ -9,7 +9,7 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Texture implementation (GiPSiTexture.h).
+The Original Code is GiPSi Texture Definition (GiPSiTexture.h).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
 Portions created by Svend Johannsen are Copyright (C) 2005.
@@ -17,6 +17,12 @@ All Rights Reserved.
 
 Contributor(s): Svend Johannsen.
 */
+
+////	GIPSITEXTURE.H v0.0
+////
+////	GiPSi Texture
+////
+////////////////////////////////////////////////////////////////
 
 #ifndef GIPSITEXTURE__H
 #define GIPSITEXTURE__H
@@ -27,37 +33,29 @@ Contributor(s): Svend Johannsen.
 ===============================================================================
 */
 
+#include "GiPSiDisplay.h"
+
+class TextureUnitTest;
+
 /*
 ===============================================================================
 	Basic texture class
 ===============================================================================
 */
 
-enum TextureName
-{
-	TextureName_TestBlood,
-	TextureName_AnteriorSeptalVeinBase,
-	TextureName_AnteriorSeptalVeinHeightMap,
-	TextureName_BasilarArteryBase,
-	TextureName_BasilarArteryHeightMap,
-	TextureName_ChoroidPlexusBase,
-	TextureName_ChoroidPlexusHeightMap,
-	TextureName_MammillarryBodiesBase,
-	TextureName_MammillarryBodiesHeightMap,
-	TextureName_VentricleFloorBase,
-	TextureName_VentricleFloorHeightMap,
-	TextureName_VentricleSystemBase,
-	TextureName_VentricleSystemHeightMap
-};
-
 class Texture
 {
 public:
-	Texture(TextureName name);
+	Texture(DisplayBuffer * newBuffer);
+	~Texture()
+	{
+		if (name)
+			delete name;
+	}
 
-	TextureName	 GetName(void);
+	const char * GetObjectName(void);
 
-	virtual void LoadFromTGAFile(const char *fileName)	= 0;
+	virtual void UpdateTexture()						= 0;
 	virtual void RenderTarget(void)						= 0;
 	virtual void Select(void)							= 0;
 	
@@ -65,11 +63,14 @@ public:
 	virtual void OverrideWithFrameBuffer(void) = 0;
 
 protected:
-	unsigned int	 id;
-	TextureName		 name;
+	unsigned int	id;
+	char		   *name;
+
+	DisplayBuffer * buffer;
+
+	friend TextureUnitTest;
 
 private:
-	
 };
 
 /*
@@ -81,7 +82,7 @@ private:
 class Texture2D : virtual public Texture
 {
 public:
-	Texture2D(const TextureName name, const char *fileName);
+	Texture2D(DisplayBuffer * newBuffer);
 
 	virtual void Select(void);
 	
@@ -91,14 +92,16 @@ public:
 
 protected:
 
-private:
-	int				width;
-	int				height;
+	friend TextureUnitTest;
 
-	virtual void LoadFromTGAFile(const char *fileName);
+private:
+	int					width;
+	int					height;
+	DisplayTextureType	textureType;
+
+	virtual void UpdateTexture();
 
 	void SwapRGBA(const int nBlocks, char *data);
-
 };
 
 /*
@@ -107,11 +110,14 @@ private:
 ===============================================================================
 */
 
+/*
 class Texture3D : virtual public Texture
 {
 public:
 
 protected:
+
+	friend TextureUnitTest;
 
 private:
 	int				width;
@@ -119,5 +125,7 @@ private:
 	int				depth;
 
 };
+*/
 
 #endif // #ifndef GIPSITEXTURE__H
+

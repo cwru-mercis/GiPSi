@@ -1,0 +1,13 @@
+<connector>
+	<name>Connector1</name>
+	<type>FEM/CBE</type>
+	<object1Name>MUSCLE</object1Name>
+	<object2Name>BIOELE</object2Name>
+	<modelParameters>
+		<FEM_CBEParameters>
+			<ExStressValueXX>1</ExStressValueXX>
+			<ExStressValueYY>2</ExStressValueYY>
+			<ExStressValueZZ>3</ExStressValueZZ>
+		</FEM_CBEParameters>
+	</modelParameters>
+</connector>

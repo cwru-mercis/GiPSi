@@ -1,0 +1,13 @@
+<shader>
+	<name>phong</name>
+	<params>
+		<param>
+			<name>halfWayApprox</name>
+			<value>true</value>
+		</param>
+		<param>
+			<name>texUnitBase</name>
+			<value>5</value>
+		</param>
+	</params>
+</shader>

@@ -9,13 +9,13 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Shader implementation (GiPSiShader.cpp).
+The Original Code is GiPSi Shader Implementation (GiPSiShader.cpp).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
 Portions created by Svend Johannsen are Copyright (C) 2005.
 All Rights Reserved.
 
-Contributor(s): Svend Johannsen.
+Contributor(s): Svend Johannsen, M. Cenk Cavusoglu, Suriya Natsupakpong.
 */
 
 /*
@@ -24,14 +24,29 @@ Contributor(s): Svend Johannsen.
 ===============================================================================
 */
 
-#include <fcntl.h>		// Needed for: open, lseek, close
-#include <io.h>			// Needed for: O_RDONLY
 #include <stdio.h>
+#include <fcntl.h>		// Needed for: open, lseek, close
+#ifdef WIN32
+#include <io.h>			// Needed for: O_RDONLY
+#endif
+					// on OpenBSD, O_RDONLY is in fcntl.h
+#include <stdlib.h>		// exit()
+
+#ifdef OPENBSD
+#include <unistd.h>		// close()  (or should the code use fclose() )
+#endif
+#ifdef LINUX
+#include <unistd.h>		// close()  (or should the code use fclose() )
+#endif
+
 #include <string.h>
 
 #include "errors.h"
 
 #include "GiPSiShader.h"
+
+#include "logger.h"
+#include "XMLNodeList.h"
 
 /*
 ===============================================================================
@@ -39,15 +54,33 @@ Contributor(s): Svend Johannsen.
 ===============================================================================
 */
 
-Shader::Shader(char *path, const int nPasses, ShaderName name)
+/**
+ * Constructor.
+ * 
+ * @param shaderNode XML project 'shader' node containing initialization information.
+ */
+Shader::Shader(XMLNode * shaderNode)
 {
-	GLcharARB *vertexShaderSource, *fragmentShaderSource;
+	XMLNodeList * shaderChildren = shaderNode->GetChildren();
+
+	XMLNode * pathNode = shaderChildren->GetNode("path");
+	char * path = pathNode->GetValue();
+	delete pathNode;
+
+	XMLNode * passesNode = shaderChildren->GetNode("passes");
+	char * passes = passesNode->GetValue();
+	int nPasses = atoi(passes);
+	delete passes;
+	delete passesNode;
+	delete shaderChildren;
+
+	//char *path, const int nPasses
+	GLchar *vertexShaderSource, *fragmentShaderSource;
 	bool success;
 	
 	this->nPasses		= nPasses;
 	this->currentPass	= 0;
-	this->name			= name;
-	this->program		= new GLhandleARB[this->nPasses];
+	this->program		= new GLint[this->nPasses];
 
 	if (nPasses < 1)
 	{
@@ -95,8 +128,12 @@ Shader::Shader(char *path, const int nPasses, ShaderName name)
 		}
 		printf("Multi pass (%i) shader successfully installed.\n", nthPass);
 	}
+	delete path;
 }
 
+/**
+ * Indicate if the system has the necessary OpenGL Shading Language extensions.
+ */
 bool Shader::Compatibility(void)
 {
 	char *extensions, *vertex, *fragment;
@@ -118,8 +155,16 @@ bool Shader::Compatibility(void)
 	{
 		return true;
 	}
+
+	return false;
 }
 
+/**
+ * Return the size in bytes of the contents of the indicated shader file.
+ * 
+ * @param fileName Pointer to the shader file name root.
+ * @param shaderType Indicate if we are interested in the vertex or fragment shader.
+ */
 int Shader::FileSize(char *fileName, ShaderType shaderType)
 {
     int fd;
@@ -155,59 +200,71 @@ int Shader::FileSize(char *fileName, ShaderType shaderType)
     return count;
 }
 
-ShaderName Shader::GetName(void)
-{
-	return this->name;
-}
-
+/**
+ * Return the number of passes this shader uses.
+ */
 int Shader::GetPasses(void)
 {
 	return this->nPasses;
 }
 
-int Shader::GetUniformLoc(GLhandleARB program, const GLcharARB* name)
+/**
+ * Get the loc of the indicated uniform variable.
+ * 
+ * @param program Shader program ID.
+ * @param name Uniform variable name.
+ */
+int Shader::GetUniformLoc(GLint program, const GLchar* name)
 {
     int loc;
 
-    loc = glGetUniformLocationARB(program, name);
+    loc = glGetUniformLocation(program, name);
 
-    if (loc == -1)
+    if (loc == GL_INVALID_VALUE)
 	{
 		error_exit(1007, "No such uniform variable");
 	}
 
-    PrintOpenGLError();
+    //PrintOpenGLError();
     return loc;
 }
 
-bool Shader::Install(const GLcharARB *vertexShaderSrc, const GLcharARB *fragmentShaderSrc, const int nthPass)
+/**
+ * Install this shader in the GPU.
+ * 
+ * @param vertexShaderSrc Vertex shader file source.
+ * @param fragmentShaderSrc Fragment shader file source.
+ * @param nthPass Current pass.
+ */
+bool Shader::Install(const GLchar *vertexShaderSrc, const GLchar *fragmentShaderSrc, const int nthPass)
 {
-	GLhandleARB vertexShaderPrg, fragmentShaderPrg;
+	GLint		vertexShaderPrg, fragmentShaderPrg;
     GLint       vertCompiled, fragCompiled;
     GLint       linked;
+	GLsizei		length = 0;
 
     // Create a vertex shader object and a fragment shader object
 
-    vertexShaderPrg	  = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-    fragmentShaderPrg = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+    vertexShaderPrg	  = glCreateShader(GL_VERTEX_SHADER);
+    fragmentShaderPrg = glCreateShader(GL_FRAGMENT_SHADER);
 
     // Load source code strings into shaders
 
-    glShaderSourceARB(vertexShaderPrg, 1, &vertexShaderSrc, NULL);
-    glShaderSourceARB(fragmentShaderPrg, 1, &fragmentShaderSrc, NULL);
+    glShaderSource(vertexShaderPrg, 1, &vertexShaderSrc, NULL);
+    glShaderSource(fragmentShaderPrg, 1, &fragmentShaderSrc, NULL);
 
     // Compile the vertex shader, and print out the compiler log file.
 
-    glCompileShaderARB(vertexShaderPrg);
+    glCompileShader(vertexShaderPrg);
     PrintOpenGLError();
-    glGetObjectParameterivARB(vertexShaderPrg, GL_OBJECT_COMPILE_STATUS_ARB, &vertCompiled);
+    glGetShaderiv(vertexShaderPrg, GL_COMPILE_STATUS, &vertCompiled);
     PrintInfoLog(vertexShaderPrg);
 
     // Compile the fragment shader, and print out the compiler log file.
 
-    glCompileShaderARB(fragmentShaderPrg);
+    glCompileShader(fragmentShaderPrg);
     PrintOpenGLError();
-    glGetObjectParameterivARB(fragmentShaderPrg, GL_OBJECT_COMPILE_STATUS_ARB, &fragCompiled);
+    glGetShaderiv(fragmentShaderPrg, GL_COMPILE_STATUS, &fragCompiled);
     PrintInfoLog(fragmentShaderPrg);
 
     if (!vertCompiled || !fragCompiled)
@@ -217,15 +274,15 @@ bool Shader::Install(const GLcharARB *vertexShaderSrc, const GLcharARB *fragment
 
     // Create a program object and attach the two compiled shaders
 
-    program[nthPass] = glCreateProgramObjectARB();
-    glAttachObjectARB(program[nthPass], vertexShaderPrg);
-    glAttachObjectARB(program[nthPass], fragmentShaderPrg);
+    program[nthPass] = glCreateProgram();
+    glAttachShader(program[nthPass], vertexShaderPrg);
+    glAttachShader(program[nthPass], fragmentShaderPrg);
 
     // Link the program object and print out the info log
 
-    glLinkProgramARB(program[nthPass]);
+    glLinkProgram(program[nthPass]);
     PrintOpenGLError();
-    glGetObjectParameterivARB(program[nthPass], GL_OBJECT_LINK_STATUS_ARB, &linked);
+    glGetProgramiv(program[nthPass], GL_LINK_STATUS, &linked);
     PrintInfoLog(program[nthPass]);
 
     if (!linked)
@@ -233,40 +290,56 @@ bool Shader::Install(const GLcharARB *vertexShaderSrc, const GLcharARB *fragment
         return false;
 	}
 
-	//GLboolean cenktemp;
-	//cenktemp=glIsProgramARB(program[0]);
-	//printf("%d\n",cenktemp);
-
     return true;
 }
 
-void Shader::PrintInfoLog(GLhandleARB obj)
+/**
+ * Print infolog of indicated object.
+ * 
+ * @param obj Handle of object for which to print infolog.
+ */
+void Shader::PrintInfoLog(GLint obj)
 {
     int infologLength = 0;
     int charsWritten  = 0;
-    GLcharARB *infoLog;
+    GLchar *infoLog;
 
     PrintOpenGLError();
-
-    glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB, &infologLength);
+		
+	if(glIsShader(obj))
+		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
+	else
+		glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
 
     PrintOpenGLError();
 
     if (infologLength > 0)
     {
-        infoLog = new GLcharARB[infologLength];
+        infoLog = new GLchar[infologLength];
         if (infoLog == NULL)
         {
             printf("ERROR: Could not allocate InfoLog buffer\n");
             exit(1);
         }
-        glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
-        printf("InfoLog:\n%s\n\n", infoLog);
+
+		if (glIsShader(obj))
+			glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+		else
+			glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
+
+		if (charsWritten > 0)
+	        printf("InfoLog:\n%s\n\n", infoLog);
         delete[] infoLog;
     }
     PrintOpenGLError();
 }
 
+/**
+ * Print last registered OpenGL error.
+ * 
+ * @param file Source file where error occurred.
+ * @param line Line of source file where error occurred.
+ */
 int Shader::PrintOGLError(char *file, int line)
 {
     GLenum glErr;
@@ -282,6 +355,14 @@ int Shader::PrintOGLError(char *file, int line)
     return retCode;
 }
 
+/**
+ * Load the contents of the indicated file into a character buffer.
+ * 
+ * @param fileName Root name of shader file to read.
+ * @param shaderType Indicates if this is a vertex or fragment shader.
+ * @param shaderText Pointer that is set to the filled buffer.
+ * @param size Size in bytes of the file to be read.
+ */
 int Shader::ReadFile(char *fileName, ShaderType shaderType, char *shaderText, int size)
 {
     FILE *fh;
@@ -323,7 +404,14 @@ int Shader::ReadFile(char *fileName, ShaderType shaderType, char *shaderText, in
     return count;
 }
 
-bool Shader::ReadSource(char *fileName, GLcharARB **vertexShaderSrc, GLcharARB **fragmentShaderSrc)
+/**
+ * Read the source files for the indicated shader.
+ * 
+ * @param fileName Root name of shader files to read.
+ * @param vertexShaderSrc Pointer set to a buffer containing the vertex shader source.
+ * @param vertexShaderSrc Pointer set to a buffer containing the fragment shader source.
+ */
+bool Shader::ReadSource(char *fileName, GLchar **vertexShaderSrc, GLchar **fragmentShaderSrc)
 {
 	int vSize, fSize;
 
@@ -338,8 +426,8 @@ bool Shader::ReadSource(char *fileName, GLcharARB **vertexShaderSrc, GLcharARB *
         return 0;
     }
 
-    *vertexShaderSrc	= new GLcharARB[vSize];
-    *fragmentShaderSrc  = new GLcharARB[fSize];
+    *vertexShaderSrc	= new GLchar[vSize];
+    *fragmentShaderSrc  = new GLchar[fSize];
 
     // Read the source code
    
@@ -358,6 +446,11 @@ bool Shader::ReadSource(char *fileName, GLcharARB **vertexShaderSrc, GLcharARB *
     return true;
 }
 
+/**
+ * Select this shader for use in current rendering.
+ * 
+ * @param nthPass Current shader pass.
+ */
 void Shader::Select(const int nthPass)
 {
 	bool validPass = this->ValidatePass(nthPass);
@@ -368,15 +461,31 @@ void Shader::Select(const int nthPass)
 	{
 		this->currentPass = nthPass;
 
-		glUseProgramObjectARB(this->program[this->currentPass]);
+		glUseProgram(this->program[this->currentPass]);
 	}
 }
 
+/**
+ * Deselect the currently selected shader.
+ */
 void Shader::UseFixedPipeline(void)
 {
-	glUseProgramObjectARB(0);
+	glUseProgram(0);
 }
 
+/**
+ * Get the current shader program ID.
+ */
+GLint Shader::GetCurrentProgram(void)
+{
+	return this->program[this->currentPass];
+}
+
+/**
+ * Make sure the chosen texture unit is within the legal range.
+ * 
+ * @param uint Texture unit to validate.
+ */
 bool Shader::ValidateTextureUnit(const int unit)
 {
 	// Make sure the chosen texture unit is within the legal range, this OpenGL
@@ -399,6 +508,11 @@ bool Shader::ValidateTextureUnit(const int unit)
 	return validTextureUnit;
 }
 
+/**
+ * Make this the chosen pass is within our range of passes.
+ * 
+ * @param nthPass Pass to be validated.
+ */
 bool Shader::ValidatePass(const int nthPass)
 {
 	// Make sure a legitimate pass has been selected
@@ -417,159 +531,3 @@ bool Shader::ValidatePass(const int nthPass)
 	return validPass;
 }
 
-// *******************************************
-// *******************************************
-//  CODE BELOW HERE 
-//   IS FOR SPECIFIC SHADERS PRESENT
-// *******************************************
-// *******************************************
-
-/*
-===============================================================================
-	PhongShader
-===============================================================================
-*/
-
-PhongShader::PhongShader(char *path, const int nPasses, ShaderName name) : Shader(path, nPasses, name)
-{
-	
-}
-
-void PhongShader::SetParameters(const bool halfWayApprox, const int texUnitBase)
-{
-	// Setup light
-
-	int sizeOfLightVector = 4;
-
-	GLfloat *lightPos = new GLfloat[sizeOfLightVector];
-	glGetLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glUniform4fvARB(GetUniformLoc( this->program[this->currentPass], "LightPosition" ), 1, lightPos);
-
-	// Setup textures
-	
-	bool validTextureUnit = this->ValidateTextureUnit(texUnitBase);
-
-	if (validTextureUnit == true)
-	{
-		int samplerUniformLoc;
-		samplerUniformLoc = GetUniformLoc(this->program[this->currentPass], "Base" );
-		glUniform1iARB(samplerUniformLoc, texUnitBase);
-	}
-
-	// Setup variables
-
-	int variableUniformLoc;
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "HalfWayApprox" );
-	glUniform1iARB(variableUniformLoc, halfWayApprox);
-}
-
-/*
-===============================================================================
-	BumpShader
-===============================================================================
-*/
-
-BumpShader::BumpShader(char *path, const int nPasses, ShaderName name) : Shader(path, nPasses, name)
-{
-	
-}
-
-void BumpShader::SetParameters(const int texUnitBase, const int texUnitHeight)
-{
-	// Setup light
-
-	int sizeOfLightVector = 4;
-
-	GLfloat *lightPos = new GLfloat[sizeOfLightVector];
-	glGetLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glUniform4fvARB(GetUniformLoc( this->program[this->currentPass], "LightPosition" ), 1, lightPos);
-
-	// Setup textures
-	
-	bool validTextureUnits = this->ValidateTextureUnit(texUnitBase) &&
-							 this->ValidateTextureUnit(texUnitHeight);
-
-	if (validTextureUnits == true)
-	{
-		int samplerUniformLoc;
-		samplerUniformLoc = GetUniformLoc(this->program[this->currentPass], "Base" );
-		glUniform1iARB(samplerUniformLoc, texUnitBase);
-
-		samplerUniformLoc = GetUniformLoc(this->program[this->currentPass], "Height" );
-		glUniform1iARB(samplerUniformLoc, texUnitHeight);
-	}
-}
-
-/*
-===============================================================================
-	TissueShader
-===============================================================================
-*/
-
-TissueShader::TissueShader(char *path, const int nPasses, ShaderName name) : Shader(path, nPasses, name)
-{
-	
-}
-
-void TissueShader::SetParameters(	const int	texUnitBase,
-									const int	texUnitHeight,
-									const float ambientContribution,
-									const float diffuseContribution,
-									const float specularContribution,
-									const float glossiness,
-									const float stepSize,
-									const float bumpiness,
-									const float opacity,
-									const float displacement )
-{
-	// Setup light
-
-	int sizeOfLightVector = 4;
-
-	GLfloat *lightPos = new GLfloat[sizeOfLightVector];
-	glGetLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glUniform4fvARB(GetUniformLoc(this->program[this->currentPass], "LightPosition" ), 1, lightPos);
-
-	// Setup textures
-
-	
-	bool validTextureUnits = this->ValidateTextureUnit(texUnitBase) &&
-							 this->ValidateTextureUnit(texUnitHeight);
-
-	if (validTextureUnits == true)
-	{
-		int  samplerUniformLoc;
-		samplerUniformLoc = GetUniformLoc(this->program[this->currentPass], "Base" );
-		glUniform1iARB(samplerUniformLoc, texUnitBase);
-
-		samplerUniformLoc = GetUniformLoc(this->program[this->currentPass], "Height" );
-		glUniform1iARB(samplerUniformLoc, texUnitHeight);
-	}
-
-	// Setup variables
-
-	int variableUniformLoc;
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "AmbientContribution" );
-	glUniform1fARB(variableUniformLoc, ambientContribution);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "DiffuseContribution" );
-	glUniform1fARB(variableUniformLoc, diffuseContribution);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "SpecularContribution" );
-	glUniform1fARB(variableUniformLoc, specularContribution);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "Glossiness" );
-	glUniform1fARB(variableUniformLoc, glossiness);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "StepSize" );
-	glUniform1fARB(variableUniformLoc, stepSize);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "Bumpiness" );
-	glUniform1fARB(variableUniformLoc, bumpiness);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "Opacity" );
-	glUniform1fARB(variableUniformLoc, opacity);
-
-	variableUniformLoc = GetUniformLoc(this->program[this->currentPass], "Displacement" );
-	glUniform1fARB(variableUniformLoc, displacement);
-}

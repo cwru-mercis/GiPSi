@@ -27,7 +27,17 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 
 #include "algebra.h"
 
-#ifdef ALGEBRA_USE_CBLAS
+#ifdef ALGEBRA_USE_MKL
+#define USE_MATH_LIBS
+#endif
+
+#ifdef ALGEBRA_USE_ATLAS
+#ifdef ALGEBRA_USE_CLAPACK
+#define USE_MATH_LIBS
+#endif
+#endif
+
+#ifdef USE_MATH_LIBS
 
 // ?copy
 template<>

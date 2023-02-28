@@ -1,0 +1,1 @@
+C:\ACE_wrappers\TAO\orbsvcs\Naming_Service\Naming_Service -ORBENDPoint iiop://129.22.151.97:1234567

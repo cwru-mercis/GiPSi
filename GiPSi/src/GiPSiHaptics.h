@@ -57,45 +57,65 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 
 typedef struct {
 	unsigned int	_n;			// number of states of the low order linear model
-	unsigned int	_m;			// number of inputs	: Dimension of the position measurement
-	unsigned int	_k;			// number of outputs: DImension of force ouput
-	Matrix<Real>	*A;			// _n x _n matrix
-	Matrix<Real>	*B;			// _n x _m matrix
-	Matrix<Real>	*C;			// _k x _n matrix
+	                            // positions + velocities
+	unsigned int	_m;			// number of inputs	: Dimension of the position+velocity measurement
+	unsigned int	_k;			// number of outputs: Dimension of force ouput
+	Matrix<Real>	*A11;		// _n/2 x _n/2 matrix
+	Matrix<Real>	*A12;		// _n/2 x _n/2 matrix
+	Matrix<Real>	*B1;		// _n/2 x _m matrix
+	Matrix<Real>	*C11;		// _k x _n/2 matrix
+	Matrix<Real>	*C12;		// _k x _n/2 matrix
 	Matrix<Real>	*D;			// _k x _m matrix
 	Vector<Real>	*f_0;		// _k x  1 vector
 	Vector<Real>	*zdot_0;	// _n x  1 vector
-	Vector<Real>	*normal;	// _k x  1 vector
+	Vector<Real>	*normal;	// _k x  1 vector	
 } GiPSiLowOrderLinearHapticModel ;
 
+#include "GiPSiSimObject.h"
+#include "XMLNode.h"
+#include "XMLNodeList.h"
+
+using namespace GiPSiXMLWrapper;
 
 // ****************************************************************
 // *			HAPTIC INTERFACE ABSTRACTION					  *  
 // ****************************************************************
+
 class	HapticInterface {
 public:
-	HapticInterface						(Real	RequestedUpdateRate = 1000.0 ) 
+	HapticInterface						(	unsigned int	HI_identifier,
+											Real			RequestedUpdateRate = 1000.0 ) 
 		{
+			Identifier=HI_identifier;
 			init_flag=false; 
 			enable_flag=false; 
 		}
+	HapticInterface()
+	{
+         Identifier = 0;
+		 init_flag = false;
+		 enable_flag = false;
+	}
 
 	virtual	int		Enable				(void) { return 0; }
 	virtual	int		Disable				(void) { return 0; }
 	virtual	int		Terminate			(void) { return 0; }
     
+	unsigned int	ReturnHapticInterfaceIdentifier (void)	{ return Identifier; }
+
 	bool			IsInitialized		(void) { return init_flag; }
 	bool			IsEnabled			(void) { return enable_flag&&init_flag; }
 	Real			ReportUpdateRate	(void) { return init_flag?UpdateRate:0.0; }
 	Real			ReportSamplingTime	(void) { return init_flag?SamplingTime:0.0; }
 
-	virtual	void	ReadConfiguration	(Vector<Real> &Position, Matrix<Real> &Orientation, unsigned int state) 
+	virtual	void	ReadConfiguration	(Vector<Real> &Position, Matrix<Real> &Orientation, unsigned int &ButtonState) 
 		{
 			Vector<Real>	p(3,0.0);
 			Matrix<Real>	R(3,3,0.0);
-			R[0][0]=R[1][1]=R[2][2]=1.0;
-			Position=p;
-			Orientation=R;
+			R[0][0] = R[1][1] = R[2][2] = 1.0;
+			Position = p;
+			Orientation = R;
+			ButtonState = 0x0000;
 		}
 	virtual	void	UseHapticModel		(GiPSiLowOrderLinearHapticModel &Model) {}
 	virtual			~HapticInterface()
@@ -105,11 +125,90 @@ public:
 		}
 
 protected:
-	bool	init_flag;
-	bool	enable_flag;
-	Real	UpdateRate;
-	Real	SamplingTime;
+	unsigned int	Identifier;
+	bool			init_flag;
+	bool			enable_flag;
+	Real			UpdateRate;
+	Real			SamplingTime;	
 };
 
+// ****************************************************************
+// *			HAPTIC INTERFACE OBJECT							  *  
+// ****************************************************************
+//
+//	Haptic Interface Object is the representation of the physical
+//    haptic interface in the virtual environment simulation
+//
+//
+class	HapticInterfaceObject : public RigidSolidObject {
+public:
+	// Constructors
+	HapticInterfaceObject(XMLNode * simObjNode);
+
+	// Haptics API
+	// A haptic interface object is not allowed to be interacted with a haptic interface
+	int		ReturnHapticModel(unsigned int BoundaryNodeIndex, GiPSiLowOrderLinearHapticModel &Model) {return 0; }
+
+	// Attach and Detach API between HapticInterface and HapticInterfaceObject
+	int					Attach(HapticInterface *hinterface);
+	void				Detach(void)			{ attach_flag=false; }
+	bool				IsAttached (void)		{ return attach_flag; }
+	unsigned int		GetHIIdentifier(void)	{ return Identifier; }
+	HapticInterface*	getHI(void)				{ return HI; }
+	
+	// Get and Set Configuration
+	Matrix<Real>		GetConfiguration(void);
+	void				SetBaseConfiguration(const Matrix<Real> &config);
+
+	// Simulation API
+	virtual	void		Simulate(void) { if (attach_flag) HI->ReadConfiguration(HI_Position, HI_Orientation, HI_ButtonState); }
+
+protected:
+	void				LoadParameter(XMLNodeList * simObjectChildren);
+	bool				attach_flag;
+	unsigned int		Identifier;
+	HapticInterface*	HI;
+
+	Vector<Real>		HI_Position;
+	Matrix<Real>		HI_Orientation;
+	unsigned int		HI_ButtonState;
+
+	Matrix<Real>		R_w_lh;	// rotation from local HI to world
+	Vector<Real>		t_w_lh;	// translation from local HI to world
+	Vector<Real>		s_w_lh;	// scaling the translation from local HI to world
+
+	Matrix<Real>		R_h_e;	// rotation from HI to HIO
+	Vector<Real>		t_h_e;	// translation from HI to HIO
+	Vector<Real>		s_h_e;	// scaling the translation from HI to HIO
+
+	GiPSiLowOrderLinearHapticModel	HapticModel;
+};
+
+/****************************************************************
+ *						BASE BOUNDARY							*  
+ ****************************************************************/
+class HapticInterfaceObjectBoundary : public RigidSolidBoundary {
+public:
+	void			Init(HapticInterfaceObject *object) { Object = (SolidObject*)object; SetHapticAttached(true);}
+	Vector<Real>	GetPosition(unsigned int index) { return zero_vector3; }	
+	Vector<Real>	GetVelocity(unsigned int index) { return zero_vector3; }	
+	Vector<Real>	GetReactionForce(unsigned int index) { return zero_vector3; }	
+	void			Set(unsigned int index, unsigned int boundary_type, 
+								Vector<Real> boundary_value, 
+								Real boundary_value2_scalar, Vector<Real> boundary_value2_vector) { }	
+	void			ResetBoundaryCondition(void) {};
+	virtual void	SetHapticModel(unsigned int index, GiPSiLowOrderLinearHapticModel  HapticModel)=0;
+};
+
+/****************************************************************
+ *						BASE DOMAIN								*  
+ ****************************************************************/
+class HapticInterfaceObjectDomain : public RigidSolidDomain {	
+public:
+	void			Init(HapticInterfaceObject *object) { Object = (SolidObject*)object; }
+	void			ResetDomainVariables(void) {}	
+	void			SetBaseConfiguration(Matrix<Real> config) { ((HapticInterfaceObject*)Object)->SetBaseConfiguration(config); } 
+	Matrix<Real>	GetConfiguration(void) { return ((HapticInterfaceObject*)Object)->GetConfiguration(); }
+};
 
 #endif

@@ -9,7 +9,7 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Visualization Engine implementation
+The Original Code is GiPSi Visualization Engine Implementation
 (GiPSiVisualizationEngine.cpp).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
@@ -27,7 +27,9 @@ Contributor(s): Svend Johannsen.
 
 #include <GL/glut.h>
 
+#include "GiPSiException.h"
 #include "GiPSiVisualizationEngine.h"
+#include "logger.h"
 
 /*
 ===============================================================================
@@ -35,103 +37,219 @@ Contributor(s): Svend Johannsen.
 ===============================================================================
 */
 
-VisualizationEngine::VisualizationEngine(SimulationKernel* simKernel)
+/**
+ * Constructor.
+ * 
+ * @param dbHead Pointer to the list of DisplayBuffers.
+ * @param newShaderLoader Initialized ShaderLoader to use for loading shader data.
+ */
+VisualizationEngine::VisualizationEngine(DisplayBuffer * dbHead, ShaderLoader * newShaderLoader)
+	:	shaderLoader(newShaderLoader)
 {
-	// At this point GLut has not yet been initialized therefore all we can do
-	// is to pass the reference to the simulation kernel.
-	
-	this->simKernel		= simKernel;
-
+	// Create Displaybuffers
+	this->nBuffers		= 0;
+	this->allBuffers	= NULL;
 	this->nScenes		= 0;
 	this->allScenes		= NULL;
 	this->nTextures		= 0;
 	this->allTextures	= NULL;
 	this->nShaders		= 0;
 	this->allShaders	= NULL;
+
+	CreateDisplayBufferArray(dbHead);
 }
 
-DisplayArray ** VisualizationEngine::ExtractMeshes(void)
+/**
+ * Constructs an array of DisplayBuffers (for ease of use) using the input DisplayBuffer pointer.
+ * 
+ * @param newShaderLoader Initialized ShaderLoader to use for loading shader data.
+ */
+void VisualizationEngine::CreateDisplayBufferArray(DisplayBuffer * dbHead)
 {
-	DisplayArray **objects;
-	objects = new DisplayArray*[this->simKernel->num_object];
-
-	for (int i=0; i<this->simKernel->num_object; i++)
+	if (nBuffers > 0)
 	{
-		objects[i] = this->simKernel->object[i]->displayMngr->GetDisplay();	
+		logger->Message("VisualizationEngine.CreateDisplayBufferArray", "DisplayBuffer array already constructed.", 3);
+		return;
+	}
+	DisplayBuffer * next = dbHead;
+	while (next)
+	{
+		nBuffers++;
+		next = next->GetNext();
 	}
 
-	return objects;
+	allBuffers = new DisplayBuffer*[nBuffers];
+	next = dbHead;
+	for (int i = 0; i < nBuffers; i++)
+	{
+		allBuffers[i] = next;
+		next = next->GetNext();
+	}
 }
 
-void VisualizationEngine::Init(void)
+/**
+ * Destructor.
+ */
+VisualizationEngine::~VisualizationEngine()
 {
-	// Setup OpenGL
-
-	glClearDepth(1.0f);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK,	GL_LINE);
-
-	// *******************************************
-	// *******************************************
-	//  APPLICATION SPECIFIC PART BEGINS HERE
-	// *******************************************
-	// *******************************************
-
-	// Load Textures
-
-	this->nTextures			= 13;
-	this->allTextures		= new Texture*[this->nTextures];
-	
-	this->allTextures[0]	= new Texture2D(TextureName_TestBlood,						"../GiPSiVisualization/Textures/test_blood.tga");
-	this->allTextures[1]	= new Texture2D(TextureName_VentricleSystemBase,			"../GiPSiVisualization/Textures/ventricle_system_veins_base.tga");
-	this->allTextures[2]	= new Texture2D(TextureName_VentricleSystemHeightMap,		"../GiPSiVisualization/Textures/ventricle_system_veins_heightmap.tga");
-	this->allTextures[3]	= new Texture2D(TextureName_ChoroidPlexusBase,				"../GiPSiVisualization/Textures/choroid_plexus_base.tga");
-	this->allTextures[4]	= new Texture2D(TextureName_ChoroidPlexusHeightMap,			"../GiPSiVisualization/Textures/choroid_plexus_heightmap.tga");
-	this->allTextures[5]	= new Texture2D(TextureName_AnteriorSeptalVeinBase,			"../GiPSiVisualization/Textures/anterior_septal_vein_base.tga");
-	this->allTextures[6]	= new Texture2D(TextureName_AnteriorSeptalVeinHeightMap,	"../GiPSiVisualization/Textures/anterior_septal_vein_heightmap.tga");
-	this->allTextures[7]	= new Texture2D(TextureName_BasilarArteryBase,				"../GiPSiVisualization/Textures/basilar_artery_base.tga");
-	this->allTextures[8]	= new Texture2D(TextureName_BasilarArteryHeightMap,			"../GiPSiVisualization/Textures/basilar_artery_heightmap.tga");
-	this->allTextures[9]	= new Texture2D(TextureName_MammillarryBodiesBase,			"../GiPSiVisualization/Textures/mammillarry_bodies_base.tga");
-	this->allTextures[10]	= new Texture2D(TextureName_MammillarryBodiesHeightMap,		"../GiPSiVisualization/Textures/mammillarry_bodies_heightmap.tga");
-	this->allTextures[11]	= new Texture2D(TextureName_VentricleFloorBase,				"../GiPSiVisualization/Textures/ventricle_floor_base.tga");
-	this->allTextures[12]	= new Texture2D(TextureName_VentricleFloorHeightMap,		"../GiPSiVisualization/Textures/ventricle_floor_heightmap.tga");
-	
-	// Load Shaders
-
-	if (Shader::Compatibility())
+	if (nScenes > 0 && allScenes)
 	{
-		this->nShaders		= 3;
-		this->allShaders	= new Shader*[this->nShaders];
-
-		this->allShaders[0] = new PhongShader (	"../GiPSiVisualization/Shaders/phong",	1, ShaderName_Phong);
-		this->allShaders[1] = new BumpShader  (	"../GiPSiVisualization/Shaders/bump",	1, ShaderName_Bump);
-		this->allShaders[2] = new TissueShader(	"../GiPSiVisualization/Shaders/tissue",	1, ShaderName_Tissue);
+		for (int i = 0; i < nScenes; i++)
+			if (allScenes[i])
+			{
+				delete allScenes[i];
+				allScenes[i] = NULL;
+			}
+		delete allScenes;
+		allScenes = NULL;
 	}
-	else
+	if (nBuffers > 0 && allBuffers)
 	{
-		fprintf(stderr, "Driver does not support OpenGL Shading Language\n");
+		delete allBuffers;
+		allBuffers = NULL;
 	}
+	if (nTextures > 0 && allTextures)
+	{
+		// The texture buffers themselves are deleted by the buffers block;
+		// Just delete the array here
+		delete allTextures;
+		allTextures = NULL;
+	}
+	if (nShaders > 0 && allShaders)
+	{
+		// The shader buffers themselves are deleted by the buffers block;
+		// Just delete the array here
+		delete allShaders;
+		allShaders = NULL;
+	}
+/*
+	if (simKernel)
+	{
+		delete simKernel;
+		simKernel = NULL;
+	}
+*/
+	if (shaderLoader)
+	{
+		delete shaderLoader;
+		shaderLoader = NULL;
+	}
+}
 
-	// Create Scenes
+/**
+ * Initalizes VisualizationEngine using 'visualization' XML project node.
+ */
+void VisualizationEngine::Init(XMLNode * visualizationNode)
+{
+	try
+	{
+		// Setup OpenGL
 
-	this->nScenes		= 1;
-	this->allScenes		= new Scene*[this->nScenes];
+		glClearDepth(1.0f);
+		glDepthFunc(GL_LEQUAL);
+		glEnable(GL_DEPTH_TEST);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glShadeModel(GL_SMOOTH);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_CULL_FACE);		
+		glDisable(GL_CULL_FACE);
+		
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK,	GL_LINE);
 
-	this->allScenes[0]	= new Scene(this->simKernel->num_object, this->ExtractMeshes(), this->nTextures, this->allTextures, this->nShaders, this->allShaders);
+		// Load Textures
+		this->nTextures = 0;
+		for (int i = 0; i < this->nBuffers; i++)
+		{
+			if (this->allBuffers[i]->GetTextureType() != GIPSI_NO_TEXTURE)
+				this->nTextures++;
+		}
 
-	// *******************************************
-	// *******************************************
-	//  APPLICATION SPECIFIC PART BEGINS HERE
-	// *******************************************
-	// *******************************************
+		int iTexture = 0;
+		this->allTextures = new Texture*[this->nTextures];
+		for (int i = 0; i < this->nBuffers && iTexture < this->nTextures; i++)
+		{
+			switch (this->allBuffers[i]->GetTextureType())
+			{
+			case GIPSI_2D_STATIC_CLIENT:
+			case GIPSI_2D_STATIC_SERVER:
+			case GIPSI_2D_DYNAMIC_SERVER:				
+				this->allTextures[iTexture] = new Texture2D(this->allBuffers[i]);
+				iTexture++;
+				break;
+			case GIPSI_3D_STATIC_CLIENT:
+				this->allTextures[iTexture] = NULL;
+	//			this->allTextures[iTexture] = new Texture3D(this->allBuffers[i]);
+				iTexture++;
+				break;
+			case GIPSI_NO_TEXTURE:
+			default:
+				break;
+			}
+		}
 
+		XMLNodeList * visualizationChildren = visualizationNode->GetChildren();
+
+		// Load Shaders
+
+		if (Shader::Compatibility())
+		{
+			XMLNode * shadersNode		= visualizationChildren->GetNode("shaders");
+			if (shadersNode->GetNumChildren() > 0)
+			{
+				XMLNodeList * shaderList	= shadersNode->GetChildren();
+				this->nShaders				= shaderList->GetLength();
+				this->allShaders			= new Shader*[this->nShaders];
+
+				for (int i = 0; i < this->nShaders; i++)
+				{
+					XMLNode * shaderNode	= shaderList->GetNode(i);
+					this->allShaders[i]		= shaderLoader->LoadShader(shaderNode);
+
+					// make sure we haven't loaded another shader by this name
+					for (int j = 0; j < i; j++)
+					{
+						if (this->allShaders[j]->GetShaderName() == this->allShaders[i]->GetShaderName())
+						{
+							throw new GiPSiException("GiPSiVisualizationEngine.Init", "Duplicate shader entry found in XML project file.");
+							delete shadersNode;
+							delete shaderList;
+							delete visualizationChildren;
+							return;
+						}
+					}
+				}
+				delete shaderList;
+			}
+			delete shadersNode;
+		}
+		else
+		{
+			logger->Error("VisualizationEngine.Init", "Driver does not support OpenGL Shading Language.");
+		}
+
+		// Create Scenes
+		XMLNode * scenesNode	= visualizationChildren->GetNode("scenes");
+		XMLNodeList * sceneList	= scenesNode->GetChildren();
+		this->nScenes			= sceneList->GetLength();
+		this->allScenes			= new Scene*[this->nScenes];
+
+		// For each scene defined in the XML project file,
+		for (unsigned int i = 0; i < this->nScenes; i++)
+		{
+			// Init a new scene using the scene node
+			XMLNode * sceneNode = sceneList->GetNode(i);
+			this->allScenes[i]	= new Scene(sceneNode, this->nBuffers, this->allBuffers, this->nTextures, this->allTextures, this->nShaders, this->allShaders);
+		}
+
+		delete visualizationChildren;
+		delete sceneList;
+	}
+	catch (...)
+	{
+		throw;
+		return;
+	}
 }

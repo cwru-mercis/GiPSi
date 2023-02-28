@@ -1,140 +1,164 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8.00"
 	Name="GiPSi"
 	ProjectGUID="{034139E3-31FB-43F0-8FD4-7D8803391045}"
-	SccProjectName=""
-	SccLocalPath="">
+	RootNamespace="GiPSi"
+	Keyword="Win32Proj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\GiPSi___Win32_Release"
-			IntermediateDirectory=".\GiPSi___Win32_Release"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions=""
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				FavorSizeOrSpeed="0"
-				OptimizeForProcessor="0"
-				AdditionalIncludeDirectories="..\Common;..\GiPSiVisualization;..\OpenGL15"
-				PreprocessorDefinitions="ALGEBRA_USE_CBLAS,WIN32,NDEBUG,_CONSOLE"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				PrecompiledHeaderFile=".\GiPSi___Win32_Release/GiPSi.pch"
-				AssemblerListingLocation=".\GiPSi___Win32_Release/"
-				ObjectFile=".\GiPSi___Win32_Release/"
-				ProgramDataBaseFileName=".\GiPSi___Win32_Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="Common.lib GiPSiVisualization.lib OpenGL15.lib mkl_c.lib pthreadVC2.lib glut32.lib glu32.lib opengl32.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\GiPSi___Win32_Release/GiPSi.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\Common\Release;..\GiPSiVisualization\Release;..\OpenGL15\Release"
-				ProgramDatabaseFile=".\GiPSi___Win32_Release/GiPSi.pdb"
-				SubSystem="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\GiPSi___Win32_Release/GiPSi.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\GiPSi___Win32_Debug"
 			IntermediateDirectory=".\GiPSi___Win32_Debug"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions=""
+				AdditionalOptions="/D_CRT_SECURE_NO_DEPRECATE"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Common;..\GiPSiVisualization;..\OpenGL15"
-				PreprocessorDefinitions="ALGEBRA_USE_CBLAS,WIN32,_DEBUG,_CONSOLE"
+				AdditionalIncludeDirectories="..\GiPSiNet;..\Opcode;..\Common;..\GiPSiVisualization;..\OpenGL15;..\XMLWrapper;..\Toolkit"
+				PreprocessorDefinitions="ALGEBRA_USE_MKL;WIN32;_DEBUG;_CONSOLE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\GiPSi___Win32_Debug/GiPSi.pch"
 				AssemblerListingLocation=".\GiPSi___Win32_Debug/"
 				ObjectFile=".\GiPSi___Win32_Debug/"
 				ProgramDataBaseFileName=".\GiPSi___Win32_Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
-				CompileAs="0"/>
+				CompileAs="2"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="Common.lib GiPSiVisualization.lib OpenGL15.lib mkl_c.lib pthreadVC2.lib glut32.lib glu32.lib opengl32.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\GiPSi___Win32_Debug/GiPSi.exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\Common\Debug;..\GiPSiVisualization\Debug;..\OpenGL15\Debug"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\GiPSi___Win32_Debug/GiPSi.pdb"
-				SubSystem="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\GiPSi___Win32_Debug/GiPSi.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLibrarianTool"
+				AdditionalDependencies="Common.lib"
+				AdditionalLibraryDirectories="..\Common\Debug"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\GiPSi___Win32_Release"
+			IntermediateDirectory=".\GiPSi___Win32_Release"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\Opcode;..\Common;..\GiPSiVisualization;..\OpenGL15;..\XMLWrapper;..\Toolkit;..\GiPSiNet"
+				PreprocessorDefinitions="ALGEBRA_USE_MKL;WIN32;NDEBUG;_CONSOLE"
+				StringPooling="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\GiPSi___Win32_Release/GiPSi.pch"
+				AssemblerListingLocation=".\GiPSi___Win32_Release/"
+				ObjectFile=".\GiPSi___Win32_Release/"
+				ProgramDataBaseFileName=".\GiPSi___Win32_Release/"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="0"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="Common.lib"
+				AdditionalLibraryDirectories="..\Common\Release"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -142,230 +166,146 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath=".\src\bioe.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\CollisionDARParameters.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\connector.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\CollisionDetectionParameters.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\fem.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						InlineFunctionExpansion="2"
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\CollisionMethodParameters.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\fem_element.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						InlineFunctionExpansion="2"
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\CollisionResponseParameters.cpp"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiDisplay.cpp">
+				RelativePath=".\src\errors.cpp"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiGeometry.cpp">
+				RelativePath=".\src\GiPSiDisplay.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\guiman.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						InlineFunctionExpansion="2"
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\GiPSiGeometry.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\hapticsman.cpp">
+				RelativePath=".\src\GiPSiHaptics.cpp"
+				>
 			</File>
 			<File
-				RelativePath="src\lumpedfluid.cpp">
+				RelativePath=".\src\GiPSiSimObject.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\src\msd.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						InlineFunctionExpansion="2"
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\src\simple.cpp">
-			</File>
-			<File
-				RelativePath=".\src\simulator.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						InlineFunctionExpansion="2"
-						AdditionalIncludeDirectories=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\src\simulator_io.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""
-						AdditionalIncludeDirectories="..\common;..\..\common;$(NoInherit)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalOptions=""/>
-				</FileConfiguration>
+				RelativePath=".\src\simulator.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath=".\src\bioe.h">
+				RelativePath=".\src\CollisionDARLoader.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\connector.h">
+				RelativePath=".\src\CollisionDARParameters.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\fem.h">
+				RelativePath=".\src\CollisionDetectionParameters.h"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiAPI.h">
+				RelativePath=".\src\CollisionMethodParameters.h"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiCompToolset.h">
+				RelativePath=".\src\CollisionResponseParameters.h"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiDisplay.h">
+				RelativePath=".\src\ConnectorLoader.h"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiGeometry.h">
+				RelativePath=".\src\errors.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\GiPSiHaptics.h">
+				RelativePath=".\src\GiPSiAPI.h"
+				>
 			</File>
 			<File
-				RelativePath="src\GiPSiIntegrators.h">
+				RelativePath=".\src\GiPSiCompToolset.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\guiman.h">
+				RelativePath=".\src\GiPSiDisplay.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\hapticsman.h">
+				RelativePath=".\src\GiPSiGeometry.h"
+				>
 			</File>
 			<File
-				RelativePath="src\lumpedfluid.h">
+				RelativePath=".\src\GiPSiHaptics.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\msd.h">
+				RelativePath=".\src\GiPSiHapticsManager.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\simple.h">
+				RelativePath=".\src\GiPSiIntegrators.h"
+				>
 			</File>
 			<File
-				RelativePath=".\src\simulator.h">
+				RelativePath=".\src\GiPSiSimObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GiPSiStart.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GiPSiUserInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ObjectLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ProjectLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ShaderParamLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\simulator.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 		</Filter>
-		<File
-			RelativePath="projects\bioe.prj">
-		</File>
-		<File
-			RelativePath="projects\cylbioe.prj">
-		</File>
-		<File
-			RelativePath=".\projects\dbellbioe.prj">
-		</File>
-		<File
-			RelativePath=".\projects\dbtest.prj">
-		</File>
-		<File
-			RelativePath="projects\fem.prj">
-		</File>
-		<File
-			RelativePath="projects\msd.prj">
-		</File>
-		<File
-			RelativePath="projects\simple.prj">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -9,14 +9,20 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Scene implementation (GiPSiScene.h).
+The Original Code is GiPSi Scene Definition (GiPSiScene.h).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
 Portions created by Svend Johannsen are Copyright (C) 2005.
 All Rights Reserved.
 
-Contributor(s): Svend Johannsen.
+Contributor(s): Svend Johannsen, Nathan Brown.
 */
+
+////	GIPSISCENE.H v0.0
+////
+////	GiPSi Scene
+////
+////////////////////////////////////////////////////////////////
 
 #ifndef GIPSISCENE__H
 #define GIPSISCENE__H
@@ -27,10 +33,19 @@ Contributor(s): Svend Johannsen.
 ===============================================================================
 */
 
+#define WIN32_LEAN_AND_MEAN
+
+#include "GiPSiAPI.h"
 #include "GiPSiCamera.h"
+#include "GiPSiDisplay.h"
+#include "GiPSiLight.h"
 #include "GiPSiShader.h"
 #include "GiPSiTexture.h"
-#include "GiPSiDisplay.h"
+#include "XMLNode.h"
+
+using namespace GiPSiXMLWrapper;
+
+class LoaderUnitTest;
 
 /*
 ===============================================================================
@@ -51,6 +66,7 @@ private:
 	char	str[256];
 	long	count;
 	double	time;
+	bool	flag;
 
 	void DrawString(char *str, float x, float y, int width, int height);
 };
@@ -63,32 +79,49 @@ private:
 
 struct Dimensions
 {
-	int	width,
+	int	width;
 	int height;
 };
 
 class Scene
 {
 public:
-	Scene(int nMesh, DisplayArray **mesh,
+	Scene(XMLNode * sceneNode,
+		  int nObject, DisplayBuffer **object,
 		  int nTexture, Texture **texture,
 		  int nShader, Shader **shader);
+	~Scene()
+	{
+		// Do not delete the objects themselves; they belong to the VE
+		if (shader)		delete shader;
+		if (texture)	delete texture;
+		if (buffer)		delete buffer;
+		if (camera)		delete camera;
+		if (light)		delete light;
+	}
 
+	int	 GetNumberOfCamera	(void);
 	int	 GetCameraMode	(int id);
 	void SetCameraMode	(int id, CameraMode cameraMode);
 	void MoveCamera		(int id, float x, float y);
+	int	 GetCameraType  (int id);
+	unsigned int GetAttachedHapticInterfaceIDOfCamera(int id);
+	void AttachHapticInterfaceToCamera(int id, HapticInterface *HI);
 
-	void Render(void);
+	void Render(int cameraID);
 	void ToggleCoordinateSystem(void);
-	void PerspectiveProjection(float fov, int width, int height);
+	void PerspectiveProjection(int cameraID, float fov, int width, int height);
 
 protected:
+	friend LoaderUnitTest;
 
 private:
 	int				  nCamera;
 	Camera			**camera;
-	int				  nMesh;
-	DisplayArray	**mesh;
+	int				  nLight;
+	Light			**light;
+	int				  nBuffer;
+	DisplayBuffer	**buffer;
 	int				  nTexture;
 	Texture			**texture;
 	int				  nShader;
@@ -106,29 +139,14 @@ private:
 	void DrawTestCubeAt				(float x, float y, float z);
 	void DrawTestTriangleAt			(float x, float y, float z);
 
-	void SelectTexture				(const TextureName name, const int unit);
+	void SelectTexture				(const char * name, const int unit);
 	void DeselectAllTextures		(void);
 
-	void SelectShader				(const ShaderName name, const int nthPass);
+	void SelectShader				(ShaderParams * params, const int nthPass);
 	void DeselectShader				(void);
 
 	void RenderToTextureBegin		(const int id);
 	void RenderToTextureEnd			(const int id);
-
-	// The below are specific
-	//  to the shaders present
-	void SetParametersPhongShader	(const int halfWayApprox, const int texUnitBase);
-	void SetParametersBumpShader	(const int texUnitBase, const int texUnitHeight);
-	void SetParametersTissueShader	(	const int texUnitBase,
-										const int texUnitHeightconst,
-										const float ambientContribution,
-										const float diffuseContribution,
-										const float specularContribution,
-										const float glossiness,
-										const float stepSize,
-										const float bumpiness,
-										const float opacity,
-										const float displacement				);
 };
 
 #endif // #ifndef GIPSISCENE__H

@@ -1,0 +1,21 @@
+<light>
+	<type>ATTACHED</type>
+	<position>
+		<x>1</x>
+		<y>2</y>
+		<z>3</z>
+	</position>
+	<direction>
+		<x>4</x>
+		<y>5</y>
+		<z>6</z>
+	</direction>
+	<color>
+		<red>0.1</red>
+		<green>0.2</green>
+		<blue>0.3</blue>
+		<opacity>0.4</opacity>
+	</color>
+	<attachedCameraName>camera1</attachedCameraName>
+	<cameraNames><cameraName>ALL</cameraName></cameraNames>
+</light>

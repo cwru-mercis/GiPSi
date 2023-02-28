@@ -9,7 +9,7 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Visualization Engine implementation
+The Original Code is GiPSi Visualization Engine Definition
 (GiPSiVisualizationEngine.h).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
@@ -31,7 +31,13 @@ Contributor(s): Svend Johannsen.
 #include "GiPSiScene.h"
 #include "GiPSiShader.h"
 #include "GiPSiTexture.h"
+#include "ShaderLoader.h"
 #include "simulator.h"
+#include "XMLNode.h"
+
+using namespace GiPSiXMLWrapper;
+
+class LoaderUnitTest;
 
 /*
 ===============================================================================
@@ -42,29 +48,35 @@ Contributor(s): Svend Johannsen.
 class VisualizationEngine
 {
 public:
-	VisualizationEngine(SimulationKernel* simKernel);
-	virtual void Start(void) = 0;
-	
+	VisualizationEngine(DisplayBuffer * dbHead, ShaderLoader * newShaderLoader);
+	~VisualizationEngine();
+	virtual void Start(SimulationKernel * newSimKernel) { simKernel = newSimKernel; }
+	SimulationKernel * simKernel;
 protected:
-	SimulationKernel	*simKernel;
 	int					 nScenes;
 	Scene			   **allScenes;
-	
-	void Init(void);
-	virtual void OnDisplay		(void) = 0;
-	virtual void OnKeyboard		(unsigned char key, int x, int y) = 0;
-	virtual void OnMouseClick	(int button, int state, int x, int y) = 0;
-	virtual void OnMouseMotion	(int x, int y) = 0;
-	virtual void OnReshape		(int width, int height) = 0;
-	
-private:
+	int					 nBuffers;
+	DisplayBuffer	   **allBuffers;
 	int					 nTextures;
 	Texture			   **allTextures;
 	int					 nShaders;
 	Shader			   **allShaders;
 	
-	DisplayArray ** ExtractMeshes(void);
+	void Init(XMLNode * visualizationNode);
+	virtual void OnDisplay		(void) = 0;
+	virtual void OnKeyboard		(unsigned char key, int x, int y) = 0;
+	virtual void OnMouseClick	(int button, int state, int x, int y) = 0;
+	virtual void OnMouseMotion	(int x, int y) = 0;
+	virtual void OnReshape		(int width, int height) = 0;
 
+	void CreateDisplayBufferArray(DisplayBuffer * dbHead);
+	
+	friend LoaderUnitTest;
+	
+protected:
+	ShaderLoader * shaderLoader;
+
+	
 };
 
 #endif // #ifndef GIPSIVISUALIZATIONENGINE__H

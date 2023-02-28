@@ -1036,12 +1036,108 @@ typedef struct {
   void (APIENTRY *DepthBoundsEXT) (GLclampd zmin, GLclampd zmax);
   void (APIENTRY *BlendEquationSeparateEXT) (GLenum modeRGB, GLenum modeAlpha);
   void (APIENTRY *AddSwapHintRectWIN) (GLint x, GLint y, GLsizei width, GLsizei height);
+
+  /* ----------------------------- GL_VERSION_2_0 ---------------------------- */
+  void (APIENTRY *AttachShader) (GLuint program, GLuint shader);
+  void (APIENTRY *BindAttribLocation) (GLuint program, GLuint index, const GLchar* name);
+  void (APIENTRY *BlendEquationSeparate) (GLenum, GLenum);
+  void (APIENTRY *CompileShader) (GLuint shader);
+  GLuint (APIENTRY *CreateProgram) (void);
+  GLuint (APIENTRY *CreateShader) (GLenum type);
+  void (APIENTRY *DeleteProgram) (GLuint program);
+  void (APIENTRY *DeleteShader) (GLuint shader);
+  void (APIENTRY *DetachShader) (GLuint program, GLuint shader);
+  void (APIENTRY *DisableVertexAttribArray) (GLuint);
+  void (APIENTRY *DrawBuffers) (GLsizei n, const GLenum* bufs);
+  void (APIENTRY *EnableVertexAttribArray) (GLuint);
+  void (APIENTRY *GetActiveAttrib) (GLuint program, GLuint index, GLsizei maxLength, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
+  void (APIENTRY *GetActiveUniform) (GLuint program, GLuint index, GLsizei maxLength, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
+  void (APIENTRY *GetAttachedShaders) (GLuint program, GLsizei maxCount, GLsizei* count, GLuint* shaders);
+  GLint (APIENTRY *GetAttribLocation) (GLuint program, const GLchar* name);
+  void (APIENTRY *GetProgramInfoLog) (GLuint program, GLsizei bufSize, GLsizei* length, GLchar* infoLog);
+  void (APIENTRY *GetProgramiv) (GLuint program, GLenum pname, GLint* param);
+  void (APIENTRY *GetShaderInfoLog) (GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* infoLog);
+  void (APIENTRY *GetShaderSource) (GLint obj, GLsizei maxLength, GLsizei* length, GLchar* source);
+  void (APIENTRY *GetShaderiv) (GLuint shader, GLenum pname, GLint* param);
+  GLint (APIENTRY *GetUniformLocation) (GLint programObj, const GLchar* name);
+  void (APIENTRY *GetUniformfv) (GLuint program, GLint location, GLfloat* params);
+  void (APIENTRY *GetUniformiv) (GLuint program, GLint location, GLint* params);
+  void (APIENTRY *GetVertexAttribPointerv) (GLuint, GLenum, GLvoid*);
+  void (APIENTRY *GetVertexAttribdv) (GLuint, GLenum, GLdouble*);
+  void (APIENTRY *GetVertexAttribfv) (GLuint, GLenum, GLfloat*);
+  void (APIENTRY *GetVertexAttribiv) (GLuint, GLenum, GLint*);
+  GLboolean (APIENTRY *IsProgram) (GLuint program);
+  GLboolean (APIENTRY *IsShader) (GLuint shader);
+  void (APIENTRY *LinkProgram) (GLuint program);
+  void (APIENTRY *ShaderSource) (GLuint shader, GLsizei count, const GLchar** strings, const GLint* lengths);
+  void (APIENTRY *StencilFuncSeparate) (GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
+  void (APIENTRY *StencilMaskSeparate) (GLenum, GLuint);
+  void (APIENTRY *StencilOpSeparate) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
+  void (APIENTRY *Uniform1f) (GLint location, GLfloat v0);
+  void (APIENTRY *Uniform1fv) (GLint location, GLsizei count, const GLfloat* value);
+  void (APIENTRY *Uniform1i) (GLint location, GLint v0);
+  void (APIENTRY *Uniform1iv) (GLint location, GLsizei count, const GLint* value);
+  void (APIENTRY *Uniform2f) (GLint location, GLfloat v0, GLfloat v1);
+  void (APIENTRY *Uniform2fv) (GLint location, GLsizei count, const GLfloat* value);
+  void (APIENTRY *Uniform2i) (GLint location, GLint v0, GLint v1);
+  void (APIENTRY *Uniform2iv) (GLint location, GLsizei count, const GLint* value);
+  void (APIENTRY *Uniform3f) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+  void (APIENTRY *Uniform3fv) (GLint location, GLsizei count, const GLfloat* value);
+  void (APIENTRY *Uniform3i) (GLint location, GLint v0, GLint v1, GLint v2);
+  void (APIENTRY *Uniform3iv) (GLint location, GLsizei count, const GLint* value);
+  void (APIENTRY *Uniform4f) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+  void (APIENTRY *Uniform4fv) (GLint location, GLsizei count, const GLfloat* value);
+  void (APIENTRY *Uniform4i) (GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+  void (APIENTRY *Uniform4iv) (GLint location, GLsizei count, const GLint* value);
+  void (APIENTRY *UniformMatrix2fv) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
+  void (APIENTRY *UniformMatrix3fv) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
+  void (APIENTRY *UniformMatrix4fv) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
+  void (APIENTRY *UseProgram) (GLuint program);
+  void (APIENTRY *ValidateProgram) (GLuint program);
+  void (APIENTRY *VertexAttrib1d) (GLuint index, GLdouble x);
+  void (APIENTRY *VertexAttrib1dv) (GLuint index, const GLdouble* v);
+  void (APIENTRY *VertexAttrib1f) (GLuint index, GLfloat x);
+  void (APIENTRY *VertexAttrib1fv) (GLuint index, const GLfloat* v);
+  void (APIENTRY *VertexAttrib1s) (GLuint index, GLshort x);
+  void (APIENTRY *VertexAttrib1sv) (GLuint index, const GLshort* v);
+  void (APIENTRY *VertexAttrib2d) (GLuint index, GLdouble x, GLdouble y);
+  void (APIENTRY *VertexAttrib2dv) (GLuint index, const GLdouble* v);
+  void (APIENTRY *VertexAttrib2f) (GLuint index, GLfloat x, GLfloat y);
+  void (APIENTRY *VertexAttrib2fv) (GLuint index, const GLfloat* v);
+  void (APIENTRY *VertexAttrib2s) (GLuint index, GLshort x, GLshort y);
+  void (APIENTRY *VertexAttrib2sv) (GLuint index, const GLshort* v);
+  void (APIENTRY *VertexAttrib3d) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
+  void (APIENTRY *VertexAttrib3dv) (GLuint index, const GLdouble* v);
+  void (APIENTRY *VertexAttrib3f) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
+  void (APIENTRY *VertexAttrib3fv) (GLuint index, const GLfloat* v);
+  void (APIENTRY *VertexAttrib3s) (GLuint index, GLshort x, GLshort y, GLshort z);
+  void (APIENTRY *VertexAttrib3sv) (GLuint index, const GLshort* v);
+  void (APIENTRY *VertexAttrib4Nbv) (GLuint index, const GLbyte* v);
+  void (APIENTRY *VertexAttrib4Niv) (GLuint index, const GLint* v);
+  void (APIENTRY *VertexAttrib4Nsv) (GLuint index, const GLshort* v);
+  void (APIENTRY *VertexAttrib4Nub) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+  void (APIENTRY *VertexAttrib4Nubv) (GLuint index, const GLubyte* v);
+  void (APIENTRY *VertexAttrib4Nuiv) (GLuint index, const GLuint* v);
+  void (APIENTRY *VertexAttrib4Nusv) (GLuint index, const GLushort* v);
+  void (APIENTRY *VertexAttrib4bv) (GLuint index, const GLbyte* v);
+  void (APIENTRY *VertexAttrib4d) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+  void (APIENTRY *VertexAttrib4dv) (GLuint index, const GLdouble* v);
+  void (APIENTRY *VertexAttrib4f) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+  void (APIENTRY *VertexAttrib4fv) (GLuint index, const GLfloat* v);
+  void (APIENTRY *VertexAttrib4iv) (GLuint index, const GLint* v);
+  void (APIENTRY *VertexAttrib4s) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+  void (APIENTRY *VertexAttrib4sv) (GLuint index, const GLshort* v);
+  void (APIENTRY *VertexAttrib4ubv) (GLuint index, const GLubyte* v);
+  void (APIENTRY *VertexAttrib4uiv) (GLuint index, const GLuint* v);
+  void (APIENTRY *VertexAttrib4usv) (GLuint index, const GLushort* v);
+  void (APIENTRY *VertexAttribPointer) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer);
+
 #ifdef _WIN32
   HANDLE (WINAPI *CreateBufferRegionARB) (HDC hDC, int iLayerPlane, UINT uType);
   VOID (WINAPI *DeleteBufferRegionARB) (HANDLE hRegion);
   BOOL (WINAPI *SaveBufferRegionARB) (HANDLE hRegion, int x, int y, int width, int height);
   BOOL (WINAPI *RestoreBufferRegionARB) (HANDLE hRegion, int x, int y, int width, int height, int xSrc, int ySrc);
-  const (WINAPI *GetExtensionsStringARB) (HDC hdc);
+  const char* (WINAPI *GetExtensionsStringARB) (HDC hdc);
   BOOL (WINAPI *GetPixelFormatAttribivARB) (HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, const int *piAttributes, int *piValues);
   BOOL (WINAPI *GetPixelFormatAttribfvARB) (HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, const int *piAttributes, FLOAT *pfValues);
   BOOL (WINAPI *ChoosePixelFormatARB) (HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
@@ -1059,7 +1155,7 @@ typedef struct {
   GLboolean (WINAPI *LoadDisplayColorTableEXT) (const GLushort *table, GLuint length);
   GLboolean (WINAPI *BindDisplayColorTableEXT) (GLushort id);
   VOID (WINAPI *DestroyDisplayColorTableEXT) (GLushort id);
-  const (WINAPI *GetExtensionsStringEXT) (void);
+  const char* (WINAPI *GetExtensionsStringEXT) (void);
   BOOL (WINAPI *MakeContextCurrentEXT) (HDC hDrawDC, HDC hReadDC, HGLRC hglrc);
   HDC (WINAPI *GetCurrentReadDCEXT) (void);
   HPBUFFEREXT (WINAPI *CreatePbufferEXT) (HDC hDC, int iPixelFormat, int iWidth, int iHeight, const int *piAttribList);
@@ -1110,6 +1206,7 @@ typedef struct {
   BOOL (WINAPI *BeginFrameTrackingI3D) (void);
   BOOL (WINAPI *EndFrameTrackingI3D) (void);
   BOOL (WINAPI *QueryFrameTrackingI3D) (DWORD *pFrameCount, DWORD *pMissedFrames, float *pLastMissedUsage);
+
 #endif /* _WIN32 */
 } _GLextensionProcs;
 
@@ -2087,6 +2184,104 @@ typedef struct {
 #define glDepthBoundsEXT                 (_GET_TLS_PROCTABLE()->DepthBoundsEXT)
 #define glBlendEquationSeparateEXT       (_GET_TLS_PROCTABLE()->BlendEquationSeparateEXT)
 #define glAddSwapHintRectWIN             (_GET_TLS_PROCTABLE()->AddSwapHintRectWIN)
+
+/* ----------------------------- GL_VERSION_2_0 ---------------------------- */
+
+
+#define glAttachShader					(_GET_TLS_PROCTABLE()->AttachShader)
+#define glBindAttribLocation			(_GET_TLS_PROCTABLE()->BindAttribLocation)
+#define glBlendEquationSeparate			(_GET_TLS_PROCTABLE()->BlendEquationSeparate)
+#define glCompileShader					(_GET_TLS_PROCTABLE()->CompileShader)
+#define glCreateProgram					(_GET_TLS_PROCTABLE()->CreateProgram)
+#define glCreateShader					(_GET_TLS_PROCTABLE()->CreateShader)
+#define glDeleteProgram					(_GET_TLS_PROCTABLE()->DeleteProgram)
+#define glDeleteShader					(_GET_TLS_PROCTABLE()->DeleteShader)
+#define glDetachShader					(_GET_TLS_PROCTABLE()->DetachShader)
+#define glDisableVertexAttribArray		(_GET_TLS_PROCTABLE()->DisableVertexAttribArray)
+#define glDrawBuffers					(_GET_TLS_PROCTABLE()->DrawBuffers)
+#define glEnableVertexAttribArray		(_GET_TLS_PROCTABLE()->EnableVertexAttribArray)
+#define glGetActiveAttrib				(_GET_TLS_PROCTABLE()->GetActiveAttrib)
+#define glGetActiveUniform				(_GET_TLS_PROCTABLE()->GetActiveUniform)
+#define glGetAttachedShaders			(_GET_TLS_PROCTABLE()->GetAttachedShaders)
+#define glGetAttribLocation				(_GET_TLS_PROCTABLE()->GetAttribLocation)
+#define glGetProgramInfoLog				(_GET_TLS_PROCTABLE()->GetProgramInfoLog)
+#define glGetProgramiv					(_GET_TLS_PROCTABLE()->GetProgramiv)
+#define glGetShaderInfoLog				(_GET_TLS_PROCTABLE()->GetShaderInfoLog)
+#define glGetShaderSource				(_GET_TLS_PROCTABLE()->GetShaderSource)
+#define glGetShaderiv					(_GET_TLS_PROCTABLE()->GetShaderiv)
+#define glGetUniformLocation			(_GET_TLS_PROCTABLE()->GetUniformLocation)
+#define glGetUniformfv					(_GET_TLS_PROCTABLE()->GetUniformfv)
+#define glGetUniformiv					(_GET_TLS_PROCTABLE()->GetUniformiv)
+#define glGetVertexAttribPointerv		(_GET_TLS_PROCTABLE()->GetVertexAttribPointerv)
+#define glGetVertexAttribdv				(_GET_TLS_PROCTABLE()->GetVertexAttribdv)
+#define glGetVertexAttribfv				(_GET_TLS_PROCTABLE()->GetVertexAttribfv)
+#define glGetVertexAttribiv				(_GET_TLS_PROCTABLE()->GetVertexAttribiv)
+#define glIsProgram						(_GET_TLS_PROCTABLE()->IsProgram)
+#define glIsShader						(_GET_TLS_PROCTABLE()->IsShader)
+#define glLinkProgram					(_GET_TLS_PROCTABLE()->LinkProgram)
+#define glShaderSource					(_GET_TLS_PROCTABLE()->ShaderSource)
+#define glStencilFuncSeparate			(_GET_TLS_PROCTABLE()->StencilFuncSeparate)
+#define glStencilMaskSeparate			(_GET_TLS_PROCTABLE()->StencilMaskSeparate)
+#define glStencilOpSeparate				(_GET_TLS_PROCTABLE()->StencilOpSeparate)
+#define glUniform1f						(_GET_TLS_PROCTABLE()->Uniform1f)
+#define glUniform1fv					(_GET_TLS_PROCTABLE()->Uniform1fv)
+#define glUniform1i						(_GET_TLS_PROCTABLE()->Uniform1i)
+#define glUniform1iv					(_GET_TLS_PROCTABLE()->Uniform1iv)
+#define glUniform2f						(_GET_TLS_PROCTABLE()->Uniform2f)
+#define glUniform2fv					(_GET_TLS_PROCTABLE()->Uniform2fv)
+#define glUniform2i						(_GET_TLS_PROCTABLE()->Uniform2i)
+#define glUniform2iv					(_GET_TLS_PROCTABLE()->Uniform2iv)
+#define glUniform3f						(_GET_TLS_PROCTABLE()->Uniform3f)
+#define glUniform3fv					(_GET_TLS_PROCTABLE()->Uniform3fv)
+#define glUniform3i						(_GET_TLS_PROCTABLE()->Uniform3i)
+#define glUniform3iv					(_GET_TLS_PROCTABLE()->Uniform3iv)
+#define glUniform4f						(_GET_TLS_PROCTABLE()->Uniform4f)
+#define glUniform4fv					(_GET_TLS_PROCTABLE()->Uniform4fv)
+#define glUniform4i						(_GET_TLS_PROCTABLE()->Uniform4i)
+#define glUniform4iv					(_GET_TLS_PROCTABLE()->Uniform4iv)
+#define glUniformMatrix2fv				(_GET_TLS_PROCTABLE()->UniformMatrix2fv)
+#define glUniformMatrix3fv				(_GET_TLS_PROCTABLE()->UniformMatrix3fv)
+#define glUniformMatrix4fv				(_GET_TLS_PROCTABLE()->UniformMatrix4fv)
+#define glUseProgram					(_GET_TLS_PROCTABLE()->UseProgram)
+#define glValidateProgram				(_GET_TLS_PROCTABLE()->ValidateProgram)
+#define glVertexAttrib1d				(_GET_TLS_PROCTABLE()->VertexAttrib1d)
+#define glVertexAttrib1dv				(_GET_TLS_PROCTABLE()->VertexAttrib1dv)
+#define glVertexAttrib1f				(_GET_TLS_PROCTABLE()->VertexAttrib1f)
+#define glVertexAttrib1fv				(_GET_TLS_PROCTABLE()->VertexAttrib1fv)
+#define glVertexAttrib1s				(_GET_TLS_PROCTABLE()->VertexAttrib1s)
+#define glVertexAttrib1sv				(_GET_TLS_PROCTABLE()->VertexAttrib1sv)
+#define glVertexAttrib2d				(_GET_TLS_PROCTABLE()->VertexAttrib2d)
+#define glVertexAttrib2dv				(_GET_TLS_PROCTABLE()->VertexAttrib2dv)
+#define glVertexAttrib2f				(_GET_TLS_PROCTABLE()->VertexAttrib2f)
+#define glVertexAttrib2fv				(_GET_TLS_PROCTABLE()->VertexAttrib2fv)
+#define glVertexAttrib2s				(_GET_TLS_PROCTABLE()->VertexAttrib2s)
+#define glVertexAttrib2sv				(_GET_TLS_PROCTABLE()->VertexAttrib2sv)
+#define glVertexAttrib3d				(_GET_TLS_PROCTABLE()->VertexAttrib3d)
+#define glVertexAttrib3dv				(_GET_TLS_PROCTABLE()->VertexAttrib3dv)
+#define glVertexAttrib3f				(_GET_TLS_PROCTABLE()->VertexAttrib3f)
+#define glVertexAttrib3fv				(_GET_TLS_PROCTABLE()->VertexAttrib3fv)
+#define glVertexAttrib3s				(_GET_TLS_PROCTABLE()->VertexAttrib3s)
+#define glVertexAttrib3sv				(_GET_TLS_PROCTABLE()->VertexAttrib3sv)
+#define glVertexAttrib4Nbv				(_GET_TLS_PROCTABLE()->VertexAttrib4Nbv)
+#define glVertexAttrib4Niv				(_GET_TLS_PROCTABLE()->VertexAttrib4Niv)
+#define glVertexAttrib4Nsv				(_GET_TLS_PROCTABLE()->VertexAttrib4Nsv)
+#define glVertexAttrib4Nub				(_GET_TLS_PROCTABLE()->VertexAttrib4Nub)
+#define glVertexAttrib4Nubv				(_GET_TLS_PROCTABLE()->VertexAttrib4Nubv)
+#define glVertexAttrib4Nuiv				(_GET_TLS_PROCTABLE()->VertexAttrib4Nuiv)
+#define glVertexAttrib4Nusv				(_GET_TLS_PROCTABLE()->VertexAttrib4Nusv)
+#define glVertexAttrib4bv				(_GET_TLS_PROCTABLE()->VertexAttrib4bv)
+#define glVertexAttrib4d				(_GET_TLS_PROCTABLE()->VertexAttrib4d)
+#define glVertexAttrib4dv				(_GET_TLS_PROCTABLE()->VertexAttrib4dv)
+#define glVertexAttrib4f				(_GET_TLS_PROCTABLE()->VertexAttrib4f)
+#define glVertexAttrib4fv				(_GET_TLS_PROCTABLE()->VertexAttrib4fv)
+#define glVertexAttrib4iv				(_GET_TLS_PROCTABLE()->VertexAttrib4iv)
+#define glVertexAttrib4s				(_GET_TLS_PROCTABLE()->VertexAttrib4s)
+#define glVertexAttrib4sv				(_GET_TLS_PROCTABLE()->VertexAttrib4sv)
+#define glVertexAttrib4ubv				(_GET_TLS_PROCTABLE()->VertexAttrib4ubv)
+#define glVertexAttrib4uiv				(_GET_TLS_PROCTABLE()->VertexAttrib4uiv)
+#define glVertexAttrib4usv				(_GET_TLS_PROCTABLE()->VertexAttrib4usv)
+#define glVertexAttribPointer			(_GET_TLS_PROCTABLE()->VertexAttribPointer)
+
 #ifdef _WIN32
 #define wglCreateBufferRegionARB          (_GET_TLS_PROCTABLE()->CreateBufferRegionARB)
 #define wglDeleteBufferRegionARB          (_GET_TLS_PROCTABLE()->DeleteBufferRegionARB)
@@ -2161,6 +2356,7 @@ typedef struct {
 #define wglBeginFrameTrackingI3D          (_GET_TLS_PROCTABLE()->BeginFrameTrackingI3D)
 #define wglEndFrameTrackingI3D            (_GET_TLS_PROCTABLE()->EndFrameTrackingI3D)
 #define wglQueryFrameTrackingI3D          (_GET_TLS_PROCTABLE()->QueryFrameTrackingI3D)
+
 #endif /* _WIN32 */
 
 #ifndef _APP_PROCTABLE

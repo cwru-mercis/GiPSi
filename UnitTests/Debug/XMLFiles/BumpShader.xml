@@ -1,0 +1,5 @@
+<shader>
+	<name>bump</name>
+	<path>.\Shaders\bump</path>
+	<passes>1</passes>
+</shader>

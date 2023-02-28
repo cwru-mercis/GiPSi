@@ -9,13 +9,13 @@ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 License for the specific language governing rights and limitations
 under the License.
 
-The Original Code is GiPSi Scene implementation (GiPSiScene.cpp).
+The Original Code is GiPSi Scene Implementation (GiPSiScene.cpp).
 
 The Initial Developers of the Original Code is Svend Johannsen.  
 Portions created by Svend Johannsen are Copyright (C) 2005.
 All Rights Reserved.
 
-Contributor(s): Svend Johannsen.
+Contributor(s): Svend Johannsen, Nathan Brown.
 */
 
 /*
@@ -28,7 +28,9 @@ Contributor(s): Svend Johannsen.
 #include <stdio.h>
 #include <timing.h>
 
+#include "GiPSiException.h"
 #include "GiPSiScene.h"
+#include "XMLNodeList.h"
 
 /*
 ===============================================================================
@@ -42,6 +44,7 @@ FramesPerSecond::FramesPerSecond(void)
 	str[1] = '\0';
 	count  = 0;
 	time   = 0;
+	flag   = false;
 }
 
 void FramesPerSecond::Display(int width, int height)
@@ -90,13 +93,19 @@ void FramesPerSecond::DrawString(char *str, float x, float y, int width, int hei
 void FramesPerSecond::Begin(void)
 {
 	start_timer(0);
+	flag=true;
 }
 
 void FramesPerSecond::End(void)
 {
-	time += get_timer(0);
-	count++;
-	sprintf(str, "fps: %.2f ", fhz(time/count));
+	if (flag==true) {
+		time += get_timer(0);
+		count++;
+		sprintf(str, "fps: %.2f ", fhz(time/count));
+	}
+	else {
+		sprintf(str, "fps: 0.0 ");
+	}
 }
 
 /*
@@ -105,27 +114,150 @@ void FramesPerSecond::End(void)
 ===============================================================================
 */
 
-Scene::Scene(int nMesh, DisplayArray **mesh,
+/**
+ * Constructor.
+ * 
+ * @param sceneNode XML project "Scene" node for initialization.
+ * @param nObject The number of objects in the visualization engine.
+ * @param object Array of nObject objects.
+ * @param nTexture The number of textures in the visualization engine.
+ * @param texture Array of nTexture textures.
+ * @param nShader The number of shaders in the visualization engine.
+ * @param shader Array of nShader shaders.
+ */
+Scene::Scene(XMLNode * sceneNode,
+			 int nObject, DisplayBuffer **object,
 			 int nTexture, Texture **texture,
-			 int nShader, Shader **shader)
+			 int nShader, Shader **shader) :
+				shader(NULL),
+				texture(NULL),
+				buffer(NULL),
+				camera(NULL),
+				light(NULL)
 {
-	this->nMesh		= nMesh;
-	this->mesh		= mesh;
+	XMLNodeList * sceneChildren = sceneNode->GetChildren();
+	XMLNode * simulationObjectNamesNode = sceneChildren->GetNode("simulationObjectNames");
+	XMLNodeList * simulationObjectNamesChildren = simulationObjectNamesNode->GetChildren();
+	// Check if the first simulationObjectName is "ALL"
+	XMLNode * simObjectName1Node = simulationObjectNamesChildren->GetNode((unsigned int)0);
+	const char * simObjectName1 = simObjectName1Node->GetValue();
+	if (strcmp(simObjectName1, "ALL") == 0)
+	{
+		delete simObjectName1;
+		// Just add all of the simObject meshes
+		this->nBuffer	= nObject - nTexture;
+		this->buffer	= new DisplayBuffer*[nBuffer];
+		int iObject = 0;
+		for (int i = 0; i < nObject && iObject < nBuffer; i++)
+		{
+			if (object[i]->GetTextureType() == GIPSI_NO_TEXTURE)
+			{
+				this->buffer[iObject] = object[i];
+				iObject++;
+			}
+		}
+	}
+	else
+	{
+		delete simObjectName1;
+		// Otherwise, just add the meshes for the requested objects
+		this->nBuffer	= simulationObjectNamesChildren->GetLength();
+		this->buffer	= new DisplayBuffer*[this->nBuffer];
+		for (int i = 0; i < this->nBuffer; i++)
+		{
+			XMLNode * simObjectNameNode = simulationObjectNamesChildren->GetNode(i);
+			const char * simObjectName = simObjectNameNode->GetValue();
+			delete simObjectNameNode;
+
+			this->buffer[i] = NULL;
+			// Look for the name in the loaded objects
+			for (int j = 0; j < nObject; j++)
+			{
+				if (strcmp(object[j]->GetObjectName(), simObjectName) == 0)
+				{
+					// Once we find the name, load its display array
+					this->buffer[i] = object[j];
+					break;
+				}
+			}
+			if (this->buffer[i] == NULL)
+			{
+				// If we haven't found the object yet, throw an exception
+				char error[256];
+				sprintf_s(error, 256, "SimObject %s not found.", simObjectName);
+				throw new GiPSiException("Scene initialization", error);
+				delete simObjectName;
+				return;
+			}
+			delete simObjectName;
+		}
+	}
+
 	this->nTexture	= nTexture;
-	this->texture	= texture;
+	this->texture	= new Texture*[nTexture];
+	for (int i = 0; i < this->nTexture; i++)
+	{
+		this->texture[i] = texture[i];
+	}
+
 	this->nShader	= nShader;
-	this->shader	= shader;
+	if (this->nShader > 0)
+	{
+		this->shader			= new Shader*[nShader];
+		for (int i = 0; i < this->nShader; i++)
+		{
+			this->shader[i]		= shader[i];
+		}
+		useFragmentPixelShaders = true;
+	}
+	else
+	{
+		this->shader			= NULL;
+		useFragmentPixelShaders = false;
+	}
 
 	fps = new FramesPerSecond();
 
 	displayCoordinateSystem = true;
 	useFragmentPixelShaders = true;
 
-	this->nCamera	= 1;
-	this->camera	= new Camera*[this->nCamera];
-	this->camera[0] = new Camera();
+	// Create cameras
+	XMLNode * camerasNode			= sceneChildren->GetNode("cameras");
+	XMLNodeList * camerasChildren	= camerasNode->GetChildren();
+	this->nCamera					= camerasChildren->GetLength();
+	this->camera					= new Camera*[this->nCamera];
+	for (int i = 0; i < this->nCamera; i++)
+	{
+		XMLNode * cameraNode = camerasChildren->GetNode(i);		
+		this->camera[i] = new Camera(cameraNode);		
+		delete cameraNode;
+	}
+	delete camerasChildren;
+	delete camerasNode;
+
+	// Create lights
+	XMLNode * lightsNode			= sceneChildren->GetNode("lights");
+	XMLNodeList * lightsChildren	= lightsNode->GetChildren();
+	this->nLight					= lightsChildren->GetLength();
+	this->light						= new Light*[this->nLight];
+	for (int i = 0; i < this->nLight; i++)
+	{
+		XMLNode * lightNode = lightsChildren->GetNode(i);
+		this->light[i] = new Light(lightNode, this->camera, this->nCamera);
+		delete lightNode;
+	}
+	delete lightsChildren;
+	delete lightsNode;
+
+	delete simObjectName1Node;
+	delete simulationObjectNamesChildren;
+	delete simulationObjectNamesNode;
+	delete sceneChildren;
 }
 
+/**
+ * Deselect the currently selected shader.
+ */
 void Scene::DeselectShader(void)
 {
 	if (this->useFragmentPixelShaders == true)
@@ -134,6 +266,9 @@ void Scene::DeselectShader(void)
 	}
 }
 
+/**
+ * Deselect all currently selected textures.
+ */
 void Scene::DeselectAllTextures(void)
 {
 	int maxTextureUnits;
@@ -146,6 +281,13 @@ void Scene::DeselectAllTextures(void)
 	}
 }
 
+/**
+ * Draw 'world axes' at the specified position.
+ * 
+ * @param x The X position of the axes.
+ * @param y The Y position of the axes.
+ * @param z The Z position of the axes.
+ */
 void Scene::DrawCoordinateSystemAt(float x, float y, float z)
 {
 	glDisable(GL_TEXTURE_2D);
@@ -230,13 +372,20 @@ void Scene::DrawCoordinateSystemAt(float x, float y, float z)
 	glEnable(GL_LIGHTING);
 }
 
+/**
+ * Draw the indexed mesh.
+ * 
+ * @param n The index of the mesh to be drawn.
+ */
 void Scene::DrawMesh(int n)
 {
 	static DisplayArray *mesh;
 
-	mesh = this->mesh[n];
+	this->buffer[n]->ConditionalDequeue();
+	mesh = this->buffer[n]->GetReadArray();
 
-	if (mesh != NULL)
+	if (mesh != NULL &&
+		(mesh->dA_size > 0 || mesh->iA_size > 0)) // Not sure if this should be an "&&"
 	{
 		switch(mesh->header.polyMode)
 		{
@@ -257,6 +406,7 @@ void Scene::DrawMesh(int n)
 				break;
 		}
 
+		// We can use interleaved arrays
 		switch(mesh->header.dataType)
 		{
 			case 0x00:
@@ -295,6 +445,93 @@ void Scene::DrawMesh(int n)
 			case 0x0e:
 				glInterleavedArrays(GL_T2F_C4F_N3F_V3F, 0, mesh->dispArray);
 				break;
+			case 0x1c:
+			{
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glEnableClientState(GL_NORMAL_ARRAY);			// normal is specified
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);	// texture coords are speficied
+
+				int stride = (2 + 3 + 3 + 3) * sizeof(float);
+
+				int cnt = 0;
+				glTexCoordPointer(2, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 2;
+				glNormalPointer(GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+				glVertexPointer(3, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+
+				GLuint p = this->shader[this->activeShaderID]->GetCurrentProgram();
+				GLint loc = glGetAttribLocation(p, "vTangent");
+				glEnableVertexAttribArray(loc);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_TRUE, stride, mesh->dispArray + cnt);
+				cnt+=3;
+				break;
+			}
+			case 0x1d:
+			{
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glEnableClientState(GL_COLOR_ARRAY);			// color (RGB) is specified
+				glEnableClientState(GL_NORMAL_ARRAY);			// normal is specified
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);	// texture coords are speficied
+
+				int stride = (2 + 3 + 3 + 3 + 3) * sizeof(float);
+
+				int cnt = 0;
+				glTexCoordPointer(2, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 2;
+				glColorPointer(3, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+				glNormalPointer(GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+				glVertexPointer(3, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+
+				GLuint p = this->shader[this->activeShaderID]->GetCurrentProgram();
+				GLint loc = glGetAttribLocation(p, "vTangent");
+				glEnableVertexAttribArray(loc);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_TRUE, stride, mesh->dispArray + cnt);
+				cnt+=3;
+				break;
+			}
+			case 0x1e:
+			{
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glEnableClientState(GL_COLOR_ARRAY);			// color (RGBA) is specified
+				glEnableClientState(GL_NORMAL_ARRAY);			// normal is specified
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);	// texture coords are speficied
+
+				int stride = (2 + 4 + 3 + 3 + 3) * sizeof(float);
+
+				int cnt = 0;
+				glTexCoordPointer(2, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 2;
+				glColorPointer(4, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 4;
+				glNormalPointer(GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+				glVertexPointer(3, GL_FLOAT, stride, mesh->dispArray + cnt);
+				cnt += 3;
+
+				GLuint p = this->shader[this->activeShaderID]->GetCurrentProgram();
+				GLint loc = glGetAttribLocation(p, "vTangent");
+				glEnableVertexAttribArray(loc);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_TRUE, stride, mesh->dispArray + cnt);
+				cnt+=3;
+				break;
+			}
+			default:
+			{
+				int len = strlen("Unrecognized data type found ().") + 6;
+				char * err = new char[len];
+				char val[6];
+				itoa(mesh->header.dataType, val, 16);
+				sprintf_s(err, len, "Unrecognized data type found (%s).", val);
+
+				throw new GiPSiException("Scene.DrawMesh", err);
+				delete err;
+				return;
+			}
 		}
 
 		switch(mesh->header.objType) {
@@ -317,6 +554,13 @@ void Scene::DrawMesh(int n)
 	}
 }
 
+/**
+ * Draw a test cube.
+ * 
+ * @param x The X position of the cube to be drawn.
+ * @param y The Y position of the cube to be drawn.
+ * @param z The Z position of the cube to be drawn.
+ */
 void Scene::DrawTestCubeAt(float x, float y, float z)
 {
 	// Translate to position
@@ -331,6 +575,13 @@ void Scene::DrawTestCubeAt(float x, float y, float z)
 	glPopMatrix();
 }
 
+/**
+ * Draw a test triangle.
+ * 
+ * @param x The X position of the triangle to be drawn.
+ * @param y The Y position of the triangle to be drawn.
+ * @param z The Z position of the triangle to be drawn.
+ */
 void Scene::DrawTestTriangleAt(float x, float y, float z)
 {
 	// Translate to position
@@ -357,11 +608,31 @@ void Scene::DrawTestTriangleAt(float x, float y, float z)
 	glPopMatrix();
 }
 
+/**
+ * Return the number of camera.  
+ */
+int	 Scene::GetNumberOfCamera	(void)
+{
+	return nCamera;
+}
+
+/**
+ * Return the current mode of the indexed camera.
+ * 
+ * @param id The index of the camera.
+ */
 int Scene::GetCameraMode(int id)
 {
 	return this->camera[id]->GetMode();
 }
 
+/**
+ * Move the indexed camera by the specified amount.
+ * 
+ * @param id The index of the camera.
+ * @param x Relative X amount to move the camera.
+ * @param y Relative Y amount to move the camera.
+ */
 void Scene::MoveCamera(int id, float x, float y)
 {
 	switch(this->camera[id]->GetMode())
@@ -385,143 +656,162 @@ void Scene::MoveCamera(int id, float x, float y)
 	}
 }
 
-void Scene::PerspectiveProjection(float fov, int width, int height)
+/**
+ * Return Camera Type.
+ *	0 : free camera
+ *  1 : haptic attached camera
+ *
+ * @param id The index of the camera. 
+ */
+int	Scene::GetCameraType(int id)
+{
+	return this->camera[id]->getType();
+}
+
+/**
+ * Return Attached Haptic Interface ID of Camera.
+ * -1 : no attached Haptic Interface
+ *
+ * @param id The index of the camera. 
+ */
+unsigned int Scene::GetAttachedHapticInterfaceIDOfCamera(int id)
+{
+	return this->camera[id]->getAttachedHapticInterfaceID();
+}
+
+/**
+ * Attach Haptic Interface to the indexed camera.
+ * 
+ * @param id The index of the camera.
+ * @param HI HapticInterface pointer. 
+ */
+void Scene::AttachHapticInterfaceToCamera(int id, HapticInterface *HI)
+{
+	if (this->camera[id]->getType() == 1)
+	{
+		this->camera[id]->AttachHapticInterface(HI);
+	}
+}
+
+/**
+ * Display using perspective projection.
+ * 
+ * @param fov The horizontal view angle.
+ * @param width Width of the viewport in world coordinates.
+ * @param height Height of the viewport in world coordinates.
+ */
+void Scene::PerspectiveProjection(int cameraID, float fov, int width, int height)
 {
 	this->dim.width		= width;
 	this->dim.height	= height;
 
 	glViewport(0, 0, this->dim.width, this->dim.height);
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(this->camera[0]->PerspectiveProjection(fov, float(width)/float(height), 0.01, 1000));
+	glLoadMatrixf(this->camera[cameraID]->PerspectiveProjection(fov, float(width)/float(height), 0.01, 1000));
 }
 
-void Scene::Render(void)
+/**
+ * Render all objects in the scene.
+ */
+void Scene::Render(int cameraID)
 {
-	this->fps->Begin();
+	try
+	{
+		this->fps->End();
+		this->fps->Begin();
 
-	// Clear screen
+		// Clear screen
 
-#ifdef _DEBUG
+	#ifdef _DEBUG
 
-	glClearColor(0.0, 0.2, 0.0, 1.0);
+		glClearColor(0.0, 0.2, 0.0, 1.0);
 
-#else
+	#else
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
 
-#endif
+	#endif
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// Set camera
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		// Set camera
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(this->camera[0]->ViewingTransformation());
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixf(this->camera[cameraID]->ViewingTransformation());
 
-	// Update light sources
+		// Update light sources
+		for (int i = 0; i < this->nLight; i++)
+		{
+			float lightPos[4];
+			// Update attached light positions
+			if (this->light[i]->type == ATTACHED &&
+				this->light[i]->attached)
+			{
+				float newPos[4];
+				light[i]->attached->GetPosition(newPos[0], newPos[1], newPos[2]);
+				for (int j = 0; j < 3; j++)
+					light[i]->pos[j] = (Real)newPos[j];
+			}
 
-	float lightPos[4];
-	this->camera[0]->GetPosition(lightPos[0], lightPos[1], lightPos[2]);
-	lightPos[3] = 1.0;
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+			// Enable and position opengl light sources
+			lightPos[3] = 1.0;
+			for (int j = 0; j < 3; j++)
+				lightPos[j] = (float)this->light[i]->pos[j];
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+		}
 
-	// Coordinate system
+		// Coordinate system
+		if (this->displayCoordinateSystem == true) { DrawCoordinateSystemAt(0, 0, 0); }
 
-	if (this->displayCoordinateSystem == true) { DrawCoordinateSystemAt(0, 0, 0); }
+		// Update all textures
+		for (int i = 0; i < this->nTexture; i++)
+		{
+			this->texture[i]->UpdateTexture();
+		}
 
-	// *******************************************
-	// *******************************************
-	//  APPLICATION SPECIFIC PART BEGINS HERE
-	// *******************************************
-	// *******************************************
+		// Display all objects
+		for (int i = 0; i < this->nBuffer; i++)
+		{
+			for (int j = 0; j < this->buffer[i]->GetNumTextures(); j++)
+			{
+				this->SelectTexture(this->buffer[i]->GetTexture(j), j);
+			}
+			if (this->useFragmentPixelShaders == true)
+			{
+				if (this->buffer[i]->GetShaderParams() != NULL)
+					this->SelectShader(this->buffer[i]->GetShaderParams(), 0);
+			}
+			this->DrawMesh(i);
+		}
 
-	// Ventricle system
+		// Show frames per second
+		if (this->useFragmentPixelShaders == true)
+		{
+			this->DeselectShader();
+		}
+		this->DeselectAllTextures();
+		this->fps->Display(this->dim.width, this->dim.height);
 
-	this->SelectTexture(TextureName_VentricleSystemBase,		0);
-	this->SelectTexture(TextureName_VentricleSystemHeightMap,	1);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(0, 1, 0.4, 0.6, 0.3, 32.0, 0.003, 1.0, 1.0, 0.0);
-		this->DrawMesh(3);
-			
-	// Choroid Plexus
+		// Display scene
+		glutSwapBuffers();
+		glutPostRedisplay();
 
-	this->SelectTexture(TextureName_ChoroidPlexusBase,		2);
-	this->SelectTexture(TextureName_ChoroidPlexusHeightMap, 3);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(2, 3, 0.3, 0.5, 0.5, 128.0, 0.004, 5.0, 1.0, 0.0);
-		this->DrawMesh(4);
-		this->DrawMesh(11);
+		// Clean up opengl light sources
+		for (int i = 0; i < this->nLight; i++)
+			glDisable(GL_LIGHT0 + i);
 
-	// Anterior Septal Vein, Thalamostriate Vein and Another Vein
-
-	this->SelectTexture(TextureName_AnteriorSeptalVeinBase,			0);
-	this->SelectTexture(TextureName_AnteriorSeptalVeinHeightMap,	1);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(0, 1, 0.5, 0.5, 0.3, 128.0, 0.004, 1.0, 1.0, 0.0);
-		this->DrawMesh(5);
-		this->DrawMesh(6);
-		this->DrawMesh(7);
-		this->DrawMesh(12);
-		this->DrawMesh(13);
-		this->DrawMesh(14);
-	this->SetParametersTissueShader(0, 1, 0.3, 0.5, 1.0, 256.0, 0.004, 1.0, 0.2, 0.005);
-		this->DrawMesh(5);
-		this->DrawMesh(6);
-		this->DrawMesh(7);
-		this->DrawMesh(12);
-		this->DrawMesh(13);
-		this->DrawMesh(14);
-
-	// Basilar Artery
-
-	this->SelectTexture(TextureName_BasilarArteryBase,		0);
-	this->SelectTexture(TextureName_BasilarArteryHeightMap,	1);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(0, 1, 0.5, 0.5, 0.3, 128.0, 0.004, 1.0, 1.0, 0.0);
-		this->DrawMesh(8);
-
-	// Mammillary Bodies
-
-	this->SelectTexture(TextureName_MammillarryBodiesBase,		0);
-	this->SelectTexture(TextureName_MammillarryBodiesHeightMap,	1);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(0, 1, 0.5, 0.9, 0.5, 128.0, 0.003, 2.0, 1.0, 0.0);
-		this->DrawMesh(10);
-
-	// Black cover
-
-	this->SetParametersTissueShader(0, 1, 0.0, 0.0, 0.0, 0.0, 0.003, 0.0, 1.0, 0.0);
-		this->DrawMesh(15);
-
-	// Ventricle Floor
-	// NOTE: Transparent objects should be rendered last
-
-	this->SelectTexture(TextureName_VentricleFloorBase,			0);
-	this->SelectTexture(TextureName_VentricleFloorHeightMap,	1);
-	this->SelectShader(ShaderName_Tissue, 0);
-	this->SetParametersTissueShader(0, 1, 0.4, 0.6, 0.3, 32.0, 0.003, 1.0, 1.0, 0.0);
-		this->DrawMesh(9);
-
-	// *******************************************
-	// *******************************************
-	//  APPLICATION SPECIFIC PART ENDS HERE
-	// *******************************************
-	// *******************************************
-
-	// Show frames per second
-
-	this->DeselectShader();
-	this->DeselectAllTextures();
-	this->fps->Display(this->dim.width, this->dim.height);
-
-	// Display scene
-
-	glutSwapBuffers();
-	glutPostRedisplay();
-
-	this->fps->End();
+		//this->fps->End();
+	}
+	catch (...)
+	{
+		throw;
+		return;
+	}
 }
 
+/**
+ * Placeholder text.
+ */
 void Scene::RenderToTextureBegin(const int id)
 {
 	this->texture[id]->SetViewPortToSizeOf();
@@ -529,6 +819,9 @@ void Scene::RenderToTextureBegin(const int id)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+/**
+ * Placeholder text.
+ */
 void Scene::RenderToTextureEnd(const int id)
 {
 	this->texture[id]->OverrideWithFrameBuffer();
@@ -538,48 +831,46 @@ void Scene::RenderToTextureEnd(const int id)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Scene::SelectShader(const ShaderName name, const int nthPass)
+/**
+ * Select specified shader.
+ * 
+ * @param params Parameters for to use for shader.
+ * @param nthPass Pass number (for multi-pass shaders).
+ */
+void Scene::SelectShader(ShaderParams * params, const int nthPass)
 {
 	if (this->useFragmentPixelShaders == true)
 	{
-		bool validShaderID		= false;
 		this->activeShaderID	= 0;
 
 		// Obtain the ID of the chosen shader
-
-		for (int i=0; i<this->nShader; i++)
+		for (int i = 0; i < this->nShader; i++)
 		{
-			ShaderName shaderName = this->shader[i]->GetName();
-
-			if (shaderName == name)
+			if (this->shader[i]->GetShaderName() == params->GetShaderName())
 			{
-				if (!validShaderID)
-				{
-					validShaderID			= true;
-					this->activeShaderID	= i;
-				}
-				else
-				{
-					validShaderID = false;
-					break;
-				}
+				// We've found the shader
+				// Now set activeShaderID (no idea what it does) and select the shader
+				this->activeShaderID = i;
+				this->shader[this->activeShaderID]->Select(nthPass);
+
+				// And set the shader params
+				this->shader[this->activeShaderID]->SetParameters(params);
+				return;
 			}
 		}
 
-		// Select the shader
-
-		if (validShaderID == true)
-		{
-			this->shader[this->activeShaderID]->Select(nthPass);
-		}
-		else
-		{
-			error_exit(1004, "Invalid or dublicate shader ID");
-		}
+		// We haven't found the shader (error and exit)
+		throw new GiPSiException("Scene.SelectShader", "Shader not found in scene shader list.");
 	}
 }
 
-void Scene::SelectTexture(const TextureName name, const int unit)
+/**
+ * Select specified texture.
+ * 
+ * @param name Texture name.
+ * @param unit Texture unit.
+ */
+void Scene::SelectTexture(const char * name, const int unit)
 {
 	// Obtain the ID of the chosen texture
 
@@ -588,9 +879,9 @@ void Scene::SelectTexture(const TextureName name, const int unit)
 
 	for (int i=0; i<this->nTexture; i++)
 	{
-		TextureName textureName = this->texture[i]->GetName();
+		const char * textureName = this->texture[i]->GetObjectName();
 
-		if (textureName == name)
+		if (strcmp(textureName, name) == 0)
 		{
 			if (!validTextureID)
 			{
@@ -631,44 +922,21 @@ void Scene::SelectTexture(const TextureName name, const int unit)
 	}
 }
 
+/**
+ * Set mode of indexed camera.
+ * 
+ * @param id Camera index.
+ * @param cameraMode New mode for to place camera in.
+ */
 void Scene::SetCameraMode(const int id, CameraMode cameraMode)
 {
 	this->camera[id]->SetMode(cameraMode);
 }
 
+/**
+ * Toggle display of coordinate system.
+ */
 void Scene::ToggleCoordinateSystem(void)
 {
 	this->displayCoordinateSystem = !(this->displayCoordinateSystem);
-}
-
-// *******************************************
-// *******************************************
-//  CODE BELOW HERE 
-//   IS FOR SPECIFIC SHADERS PRESENT
-// *******************************************
-// *******************************************
-
-void Scene::SetParametersBumpShader(const int texUnitBase, const int texUnitHeight)
-{
-	((BumpShader *) this->shader[this->activeShaderID])->SetParameters(texUnitBase, texUnitHeight);
-}
-
-void Scene::SetParametersPhongShader(const int halfWayApprox, const int texUnitBase)
-{
-	((PhongShader *) this->shader[this->activeShaderID])->SetParameters(halfWayApprox, texUnitBase);
-}
-
-void Scene::SetParametersTissueShader(	const int	texUnitBase,
-										const int	texUnitHeightconst,
-										const float ambientContribution,
-										const float diffuseContribution,
-										const float specularContribution,
-										const float glossiness,
-										const float stepSize,
-										const float bumpiness,
-										const float opacity,
-										const float displacement )
-{
-	((TissueShader *) this->shader[this->activeShaderID])->SetParameters(	texUnitBase, texUnitHeightconst, ambientContribution, diffuseContribution,
-																			specularContribution, glossiness, stepSize, bumpiness, opacity, displacement);
 }

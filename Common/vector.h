@@ -200,7 +200,8 @@ protected:
 		_dim = dim;
 	}
 
-#if defined(_MSC_VER) && _MSC_VER <= 1200
+	//#if defined(_MSC_VER) && _MSC_VER <= 1200
+#if 1
 	friend void		copyVV<T>(Vector<T> &result, const Vector<T> &v);
 	friend void		copyVA<T>(Vector<T> &result, const T a[]);
 	friend void		scalVS<T>(Vector<T> &result, const T &s);
@@ -215,7 +216,16 @@ protected:
 	friend void		subVV<> (Vector<T> &result, const Vector<T> &v1, const Vector<T> &v2);
 	friend T		dotVV<> (const Vector<T> &v1, const Vector<T> &v2);
 #endif
-};	
+};
+	
+template <>
+double Vector<float>::length(void); 
+template <>
+double Vector<double>::length(void); 
+template <>
+double Vector<float>::length_sq(void); 
+template <>
+double Vector<double>::length_sq(void); 
 
 // Vector-Vector Copy Operator
 template<class T>
@@ -254,7 +264,7 @@ template<class T>
 inline Vector<T> operator*(const Vector<T> &v, const T &s)
 {
 	Vector<T>				r(v.dim());
-	static unsigned int		dim;
+	unsigned int		dim;
 	T						*rdata, *vdata;
 
 	dim		= r.dim();
@@ -271,7 +281,7 @@ template<class T>
 inline Vector<T> operator*(const T &s, const Vector<T> &v)
 {
 	Vector<T>				r(v.dim());
-	static unsigned int		dim;
+	unsigned int		dim;
 	T						*rdata, *vdata;
 
 	dim		= r.dim();
@@ -301,7 +311,7 @@ template<class T>
 inline Vector<T> operator/(const Vector<T> &v, const T &s)
 {
 	Vector<T>				r(v.dim());
-	static unsigned int		dim;
+	unsigned int		dim;
 	T						*rdata, *vdata;
 
 	dim		= r.dim();
@@ -669,9 +679,5 @@ inline Real Vector<T>::length()
 	return sqrt(length_sq());
 }
 #endif
-
-// Constant vector definitions
-const Vector<Real>	zero_vector2(2, 0.0);
-const Vector<Real>	zero_vector3(3, 0.0);
 
 #endif

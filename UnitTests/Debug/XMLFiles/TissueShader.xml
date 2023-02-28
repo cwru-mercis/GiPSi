@@ -1,0 +1,5 @@
+<shader>
+	<name>tissue</name>
+	<path>.\Shaders\tissue</path>
+	<passes>1</passes>
+</shader>

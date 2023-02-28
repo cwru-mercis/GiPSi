@@ -24,6 +24,10 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 ////	1)	Defines the base class for the simulation objects
 ////    2)	Defines the base class for connectors
 ////    3)	Defines the base class for integrators
+////	4)	Defines the base class for haptic interfaces
+////	5)  Defines the base class for haptic interface objects
+////	6)  Defines the gemetry primitives
+////	7)	Defines the display primitives
 ////
 ////////////////////////////////////////////////////////////////
 
@@ -34,93 +38,9 @@ Contributor(s): Tolga Goktekin, M. Cenk Cavusoglu.
 #include "GiPSiGeometry.h"
 #include "GiPSiDisplay.h"
 #include "GiPSiHaptics.h"
+#include "GiPSiSimObject.h"
 
-///****************************************************************
-// *						SIMULATION OBJECT					  *  
-// ****************************************************************
-
-// Base class for a simulatable object
-class SIMObject {
-public:
-	DisplayManager	*displayMngr;
-
-	// Constructors
-	SIMObject(	char* name, 
-				Real time		= 0.0, 
-				Real timestep	= 0.01): 
-				time(time), timestep(timestep), 
-				geometry(NULL), boundary(NULL), domain(NULL) { 
-
-		this->name = new char[strlen(name)+1];
-
-		sprintf(this->name,"%s",name); 
-	}
-
-	// Access to private data
-	char*			GetName(void)		const { return name; }
-	void			SetName(char *newname)	  { delete[] name;
-												name = new char[strlen(newname)+1];
-												sprintf(this->name,"%s",newname); }
-	Real			GetTimestep(void)	const { return timestep; }
-	void			SetTimestep(Real dt)	{ timestep = dt; }
-	Real			GetTime(void)		const { return time; }
-	void			SetTime(Real t)			{ time = t; }
-	Geometry*		GetGeometryPtr(void)	const { return geometry; }
-	Boundary*		GetBoundaryPtr(void)	const { return boundary; }
-	Domain*			GetDomainPtr(void)		const { return domain; }
-
-	// Loader
-	virtual void	Load(char* filename) {}
-
-	// Display functions
-    virtual void	Display(void) {}
-    virtual void	SetupDisplay(void) {}
-
-	// Haptics API
-	virtual int		ReturnHapticModel(unsigned int BoundaryNodeIndex, GiPSiLowOrderLinearHapticModel &Model) {return 0; }
-
-	// Simulation API
-	virtual void	Simulate(void) {}
-
-protected:
-	char			*name;				// Name
-	Geometry		*geometry;			// Display Geometry
-	Boundary		*boundary;			// Boundary Geometry
-	Domain			*domain;			// Domain Geometry
-	Real			time;				// Local time of the object
-	Real			timestep;			// The local timestep
-};
-
-
-
-// ****************************************************************
-// *						BASE CONNECTOR						  *  
-// ****************************************************************
-class Connector {
-public:
-
-	virtual void	process(void) {}
-
-protected:
-	Boundary	* boundaries;
-	Domain		* domains;
-
-};
-
-
-// ****************************************************************
-// *						BASE INTEGRATOR CLASS				  *  
-// ****************************************************************
-
-// The base Integrator Class
-template <class S>
-class Integrator {
-public:
-  typedef typename				S::State State;
-
-  virtual void				Integrate(S &system, Real h) {}
-};
-
-
+#define	MAX_SIMOBJ		64
+#define	MAX_CONNECTOR	32
 
 #endif

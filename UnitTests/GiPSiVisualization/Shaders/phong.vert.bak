@@ -1,0 +1,35 @@
+//
+// Phong Shading
+//
+// Authors: Svend Johannsen
+//
+// Copyright (c) 2005
+
+uniform vec3 LightPosition;
+uniform bool HalfWayApprox;
+
+varying vec3 norm, light, view, halfway;
+
+void main(void)
+{
+   // NOTE: The supplied LightPosition should be in view space to
+   // simulate a fixed position light source in world space.
+   
+   vec3 pos = vec3( gl_ModelViewMatrix * gl_Vertex );               // Position to view space
+   norm     = normalize( gl_NormalMatrix * gl_Normal );             // Normal to view space
+   
+   if( HalfWayApprox )
+   {
+      light    = normalize( LightPosition - pos );                  // Light vector
+      view     = normalize( -pos );                                 // View vector
+      halfway  = normalize( light + view );                         // Halfway vector
+   }
+   else
+   {
+      light    = normalize( LightPosition - pos );                  // Light vector
+      view     = normalize( -pos );                                 // View vector
+      halfway  = vec3( 0 );                                         // Not used
+   }
+   
+   gl_Position = ftransform();
+}

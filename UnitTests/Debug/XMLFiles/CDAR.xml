@@ -1,0 +1,11 @@
+<collisionDAR>
+	<enabled>false</enabled>
+	<colDetectionMethod>Tri-Tri</colDetectionMethod>
+	<colResponseMethod>Some Collision Response Method</colResponseMethod>
+	<colDetection><Tri-Tri>
+			<colThreshold>0.5</colThreshold>
+		</Tri-Tri>
+	</colDetection>
+	<colResponse><None/>
+	</colResponse>
+</collisionDAR>

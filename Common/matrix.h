@@ -343,7 +343,7 @@ inline	Vector<T>	Matrix<T>::column(int i)
 	Vector<T>	result(_m, 0.0);
 	Matrix<T>&	M = (*this);
 
-	for(int j=0; j<_m; j++)	result[j] = M[j][i];
+	for(unsigned int j=0; j<_m; j++)	result[j] = M[j][i];
 
 	return result;
 }
@@ -354,12 +354,10 @@ inline Vector<T>	Matrix<T>::row(int	i)
 	Vector<T>	result(_n, 0.0);
 	Matrix<T>	&M = (*this);
 
-	for(int j=0; j<_n; j++)	result[j] = M[i][j];
+	for(unsigned int j=0; j<_n; j++)	result[j] = M[i][j];
 
 	return result;
 }
-
-
 
 template<class T> 
 inline void copyMM(Matrix<T> &result, const Matrix<T> &a) 
