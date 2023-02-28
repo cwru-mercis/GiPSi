@@ -1,0 +1,69 @@
+//
+// Bump Mapping
+//
+// Authors: Svend Johannsen
+//
+// Copyright (c) 2005
+
+uniform sampler2D Tex;
+uniform sampler2D Per;
+
+varying vec3 vNormal, vLight, vView;
+
+const float AmbientContribution  = 0.1;
+const float SpecularContribution = 0.3;
+const float DiffuseContribution  = 1.0 - SpecularContribution - AmbientContribution;
+
+vec3 AmbientComponent(float intensity)
+{
+   return vec3(AmbientContribution * intensity);
+}
+
+vec3 DiffuseComponent(float intensity, vec3 normal, vec3 light)
+{
+   return vec3(DiffuseContribution * max(0.0, dot(normal, light)));
+   //return vec3(DiffuseContribution * dot(normal, light));
+}
+
+vec3 SpecularComponent(float intensity, vec3 normal, vec3 light, vec3 view)
+{
+   // Conventional specular component
+   vec3 reflection = normalize(reflect(-light, normal));
+   return vec3(SpecularContribution * pow(max(0.0, dot(view, reflection)), 16.0));
+   //return vec3(SpecularContribution * pow(dot(view, reflection), 16.0));
+}
+
+void main(void)
+{
+   vec3 normal = normalize(vNormal);
+   vec3 light  = normalize(vLight);
+   vec3 view   = normalize(vView);
+   
+   // Ghetto pertubation of normal
+   //vec4 pert = texture2D(Per, gl_TexCoord[0].st);
+   //normal = 0.5 * normal - 0.5 * pert.x * light;
+   //normal = normalize(normal);
+   
+   // Ghetto bump mapping
+   vec4 current = texture2D(Per, gl_TexCoord[0].st);
+   vec4 right   = texture2D(Per, vec2(gl_TexCoord[0].s + 0.05, gl_TexCoord[0].t       ));
+   vec4 above   = texture2D(Per, vec2(gl_TexCoord[0].s,        gl_TexCoord[0].t + 0.05));
+   float dx     = right.x - current.x;
+   float dy     = above.x - current.x;
+   normal = 0.5 * normal + 0.5 * vec3(dx, dy, 0.0);
+   normal = normalize(normal);
+   
+   // Phong Illumination Model
+   vec3 intensity = AmbientComponent(AmbientContribution) + DiffuseComponent(DiffuseContribution, normal, light) +
+                    SpecularComponent(SpecularContribution, normal, light, view);
+   
+   // Texture look up
+   vec4 texel = texture2D(Tex, gl_TexCoord[0].st);
+   vec3 color  = texel.rgb - 0.3 * current.rgb;
+   float alpha = texel.a;
+   
+   // Texel and Illumination model
+   color = intensity * color;         //  0.2 * intensity + 0.8 * 
+   
+   gl_FragColor = vec4 (color, alpha);
+}

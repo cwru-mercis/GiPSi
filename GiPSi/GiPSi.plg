@@ -1,0 +1,330 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: GiPSi - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Tolga\LOCALS~1\Temp\RSP1C5.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /ZI /Od /I "..\..\common" /D "ALGEBRA_USE_CBLAS" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"GiPSi___Win32_Debug/" /Fo"GiPSi___Win32_Debug/" /Fd"GiPSi___Win32_Debug/" /FD /GZ /c 
+"C:\dev\DigitalHuman\GiPSi\src\bioe.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\connector.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\display.cpp"
+"C:\dev\Common\errors.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\fem.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\fem_boundary.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\fem_element.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\geometry.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\guiman.cpp"
+"C:\dev\Common\load_node.cpp"
+"C:\dev\Common\matrix.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\msd.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\simulator.cpp"
+"C:\dev\DigitalHuman\GiPSi\src\simulator_io.cpp"
+"C:\dev\Common\timing.cpp"
+"C:\dev\Common\vector.cpp"
+]
+Creating command line "xicl6.exe @C:\DOCUME~1\Tolga\LOCALS~1\Temp\RSP1C5.tmp" 
+Creating temporary file "C:\DOCUME~1\Tolga\LOCALS~1\Temp\RSP1C6.tmp" with contents
+[
+mkl_c.lib mkl_lapack.lib mkl_p3.lib pthreadVC.lib glut32.lib glu32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"GiPSi___Win32_Debug/GiPSi.pdb" /debug /machine:I386 /out:"GiPSi___Win32_Debug/GiPSi.exe" /pdbtype:sept /libpath:"C:\Program Files\Intel\MKL\ia32\lib" 
+.\GiPSi___Win32_Debug\bioe.obj
+.\GiPSi___Win32_Debug\connector.obj
+.\GiPSi___Win32_Debug\display.obj
+.\GiPSi___Win32_Debug\errors.obj
+.\GiPSi___Win32_Debug\fem.obj
+.\GiPSi___Win32_Debug\fem_boundary.obj
+.\GiPSi___Win32_Debug\fem_element.obj
+.\GiPSi___Win32_Debug\geometry.obj
+.\GiPSi___Win32_Debug\guiman.obj
+.\GiPSi___Win32_Debug\load_node.obj
+.\GiPSi___Win32_Debug\matrix.obj
+.\GiPSi___Win32_Debug\msd.obj
+.\GiPSi___Win32_Debug\simulator.obj
+.\GiPSi___Win32_Debug\simulator_io.obj
+.\GiPSi___Win32_Debug\timing.obj
+.\GiPSi___Win32_Debug\vector.obj
+]
+Creating command line "xilink6.exe @C:\DOCUME~1\Tolga\LOCALS~1\Temp\RSP1C6.tmp"
+<h3>Output Window</h3>
+Compiling...
+bioe.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+connector.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+display.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+errors.cpp
+fem.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.cpp(166) : warning C4101: 'j' : unreferenced local variable
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+fem_boundary.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+fem_element.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem_element.cpp(21) : warning C4101: 'j' : unreferenced local variable
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+geometry.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(289) : warning C4101: 'vertex_offset' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(286) : warning C4101: 'node_file' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(287) : warning C4101: 'ele_file' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(285) : warning C4101: 'buffer' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(284) : warning C4101: 'errmsg' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(282) : warning C4101: 'fp' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\geometry.cpp(396) : warning C4101: 'fp' : unreferenced local variable
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+guiman.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(76) : warning C4101: 'realy' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(77) : warning C4101: 'w0x' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(77) : warning C4101: 'w0y' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(77) : warning C4101: 'w0z' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(78) : warning C4101: 'w1x' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(79) : warning C4101: 'ox' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(78) : warning C4101: 'w1y' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(79) : warning C4101: 'oy' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(78) : warning C4101: 'w1z' : unreferenced local variable
+c:\dev\digitalhuman\gipsi\src\guiman.cpp(79) : warning C4101: 'oz' : unreferenced local variable
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+load_node.cpp
+matrix.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+msd.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\msd.cpp(49) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\msd.cpp(49) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\msd.cpp(49) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\msd.cpp(239) : warning C4101: 'j' : unreferenced local variable
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+simulator.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+simulator_io.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+When compiling applications with MSVC++ and C++ exception handling:
+  Replace any 'catch( ... )' with 'PtW32CatchAll' in POSIX threads
+  if you want POSIX thread cancelation and pthread_exit to work.
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\fem.h(121) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\dev\digitalhuman\gipsi\src\bioe.h(32) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(162) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(158) : while compiling class-template member function 'class std::basic_istream<char,struct std::char_traits<char> > &__thiscall std::basic_istream<char,struct std::char_traits<char> >::operator >>(double &)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+timing.cpp
+vector.cpp
+c:\program files\microsoft visual studio\vc98\include\istream(547) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<char,struct std::char_traits<char> > &__thiscall std::basic_ostream<char,struct std::char_traits<char> >::put(char)'
+c:\program files\microsoft visual studio\vc98\include\ostream(234) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\ostream(229) : while compiling class-template member function 'class std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> > &__thiscall std::basic_ostream<unsigned short,struct std::char_traits<unsigned short> >::put(unsigned short)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<char,struct std::char_traits<char> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\istream(46) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\istream(41) : while compiling class-template member function 'bool __thiscall std::basic_istream<unsigned short,struct std::char_traits<unsigned short> >::ipfx(bool)'
+c:\program files\microsoft visual studio\vc98\include\xstring(525) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify -GX
+        c:\program files\microsoft visual studio\vc98\include\xstring(521) : while compiling class-template member function 'void __thiscall std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::_Copy(unsigned int)'
+Generating Code...
+Linking...
+xilink6: executing 'C:\PROGRA~1\MICROS~2\VC98\Bin\link.exe'
+
+
+
+<h3>Results</h3>
+GiPSi.exe - 0 error(s), 142 warning(s)
+</pre>
+</body>
+</html>

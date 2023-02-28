@@ -1,0 +1,51 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GiPSi", "GiPSi.vcproj", "{034139E3-31FB-43F0-8FD4-7D8803391045}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203} = {7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}
+		{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97} = {9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\Common\Common.vcproj", "{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GiPSiVisualization", "..\GiPSiVisualization\GiPSiVisualization.vcproj", "{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203} = {7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}
+		{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD} = {FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL15", "..\OpenGL15\OpenGL15.vcproj", "{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{034139E3-31FB-43F0-8FD4-7D8803391045}.Debug.ActiveCfg = Debug|Win32
+		{034139E3-31FB-43F0-8FD4-7D8803391045}.Debug.Build.0 = Debug|Win32
+		{034139E3-31FB-43F0-8FD4-7D8803391045}.Release.ActiveCfg = Release|Win32
+		{034139E3-31FB-43F0-8FD4-7D8803391045}.Release.Build.0 = Release|Win32
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}.Debug.ActiveCfg = Debug|Win32
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}.Debug.Build.0 = Debug|Win32
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}.Release.ActiveCfg = Release|Win32
+		{7A3B7B18-A5D6-4629-883A-BCB0C5BF7203}.Release.Build.0 = Release|Win32
+		{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}.Debug.ActiveCfg = Debug|Win32
+		{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}.Debug.Build.0 = Debug|Win32
+		{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}.Release.ActiveCfg = Release|Win32
+		{9D13918F-EB4C-4E89-B4FD-ECF9DAEEFB97}.Release.Build.0 = Release|Win32
+		{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}.Debug.ActiveCfg = Debug|Win32
+		{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}.Debug.Build.0 = Debug|Win32
+		{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}.Release.ActiveCfg = Release|Win32
+		{FAF5A22A-A2C4-45D6-BB07-B2003874EBAD}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,88 @@
+/* ============================================================================
+// TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO
+// ============================================================================
+
+	The Visualization Engine consists of:
+	=====================================
+	GiPSiCamera.cpp
+	GiPSiScene.cpp
+	GiPSiShader.cpp
+	GiPSiTexture.cpp
+	GiPSiVisualizationEngine.cpp
+	GlutVisualizationEngine.cpp
+
+	GiPSiCamera.h
+	GiPSiScene.h
+	GiPSiShader.h
+	GiPSiTexture.h
+	GiPSiVisualizationEngine.h
+	GlutVisualizationEngine.h
+
+	TODO list:
+	==========
+	o	Add speric movement to camera.							- done
+
+	o	Turn GiPSi into a library: This HAS to be done, there is no way to
+		construct the Visualization engine otherwise. Alternatively the
+		Visualization Engine can be included in the GiPSi project.			- done
+
+	o	Fix problem with crashes on exit.						- done
+
+	o	Namespace conflicts, we need a GiPSi namespace.					- no
+
+	o	The simulation kernel needs to pass more information, namely:
+			number of textures used,
+			which textures,
+			number of shaders used,
+			which shader.
+
+	o	Modify Scene::PerspectiveProjection to set an abitrary viewing angle.
+
+	o	And to set the camera vectors.							- done
+
+	o	Check license for OpenGL 1.5							- done
+
+	o	LoadData structure needs num_texcoords
+
+	o	LDNode should have a constructor that initializes all pointers to NULL.
+		Maybe there is a better solutions to this, like specifically setting
+		pointers to NULL when no information of that particular type is
+		available.									- done
+
+	o	Toogle coordinate system on/off for a specific scene.				- done
+
+	o	Add license header to all files.						- done
+
+	o	Bilinear texture filtering.
+
+	o	Anti-Aliasing.
+
+	o	Document classes.								- done
+
+	o	Add a Frames per Second counter to the top right corner				- done
+
+	o	Change the general error function so that it keeps the console up		- done
+
+	o	Add code to generate errors if the Texture2D tga specific constructor
+		is used to load other file type i.e. bmp files.					- done
+
+	o	Fix the delete crash in GiPSiGeometry.cpp
+		void TriSurface::Load(char *basename)						- done
+
+
+	o	Comments from Dr. Manjula:
+			- Fixed texture color
+			- Fixed small errors in texture
+			- Moved the Basilar Artery down
+			- Made the Basilar Artery more red
+			- Removed Dumbells
+			- Added black cover
+			- Removed weird grey lines
+			- Improved the floor							- done
+
+	o	Remove code that is not being used and improve the quality of the
+		remaining code for a GiPSi release.						-
+
+// ============================================================================
+// TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO   TODO 
+// ==========================================================================*/

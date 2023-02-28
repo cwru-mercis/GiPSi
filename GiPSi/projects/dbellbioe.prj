@@ -1,0 +1,6 @@
+P SIMPLE
+l BLOOD objects\dumbell_4K1i.obj 0.001 -100.0 100.0 0.0 20.0 0.010 0.1 0.1 0.8 0.1 0.1 1.0 0.0 0.0 0.0   1.0 1.0 1.0 0.0 1.0 0.0 0.0 
+e BIOELE objects\dumbell_4K.neu  0.001 1.0 2.0 0.5                         0.1 1.0 0.1 1.0 0.0 0.0 0.0   1.0 1.0 1.0 0.0 1.0 0.0 0.0
+f MUSCLE objects\dumbell_4K.neu  0.001 0.03 64.4068 3.3898 1.0 1.0         1.0 0.2 0.2 0.5 0.0 0.0 0.0   1.0 1.0 1.0 0.0 1.0 0.0 0.0
+c fe 2 1 null 35.0 35.0 35.0
+c fl 2 0 objects\dumbell_4K.obj.dumbell_4K1.obj.corr 0.0
